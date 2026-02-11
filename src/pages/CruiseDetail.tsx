@@ -12,6 +12,7 @@ import TopBar from "@/components/TopBar";
 import Header from "@/components/Header";
 import MainNav from "@/components/MainNav";
 import Footer from "@/components/Footer";
+import DeckPlanVisual from "@/components/DeckPlanVisual";
 
 const categoryImages: Record<string, string> = {
   interior: "/images/cabins/interior.jpg",
@@ -798,69 +799,24 @@ const CruiseDetail = () => {
                 </h2>
 
                 {deckPlans && deckPlans.length > 0 ? (
-                  <div className="space-y-3">
-                    {deckPlans.map((d) => (
-                      <div key={d.id} className="offer-card flex items-start gap-4">
-                        <div className="bg-primary text-primary-foreground rounded-sm w-16 h-12 flex items-center justify-center font-heading font-bold text-sm shrink-0">
-                          {d.deck_number}
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="font-bold text-foreground text-sm">{d.deck_name}</h3>
-                          <p className="text-xs text-muted-foreground mt-1">{d.features?.join(" • ")}</p>
-                          {d.cabin_categories?.length > 0 && (
-                            <div className="flex flex-wrap gap-1 mt-2">
-                              {d.cabin_categories.map(cat => (
-                                <span key={cat} className="bg-primary/10 text-primary text-[10px] font-semibold px-2 py-0.5 rounded-sm">
-                                  {categoryLabels[cat] || cat}
-                                </span>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  <DeckPlanVisual
+                    deckPlans={deckPlans}
+                    cabins={cabins}
+                    shipName={cruise.ship_name}
+                  />
                 ) : (
-                  <div className="space-y-3">
-                    {deckInfo.map((d) => (
-                      <div key={d.deck} className="offer-card flex items-start gap-4">
-                        <div className="bg-primary text-primary-foreground rounded-sm w-16 h-12 flex items-center justify-center font-heading font-bold text-sm shrink-0">
-                          {d.deck.replace("Deck ", "")}
-                        </div>
-                        <div>
-                          <h3 className="font-bold text-foreground text-sm">{d.deck}</h3>
-                          <p className="text-xs text-muted-foreground">{d.features}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  <DeckPlanVisual
+                    deckPlans={deckInfo.map((d, i) => ({
+                      id: `fallback-${i}`,
+                      deck_number: parseInt(d.deck.replace("Deck ", "").split("-")[0]),
+                      deck_name: d.deck,
+                      features: d.features.split(", "),
+                      cabin_categories: [],
+                    }))}
+                    cabins={cabins}
+                    shipName={cruise.ship_name}
+                  />
                 )}
-
-                <div className="offer-card mt-6">
-                  <h3 className="font-heading font-bold text-primary mb-3">Cabin Categories by Deck</h3>
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="border-b border-border">
-                          <th className="text-left py-2 text-muted-foreground font-semibold text-xs">Category</th>
-                          <th className="text-left py-2 text-muted-foreground font-semibold text-xs">Deck Location</th>
-                          <th className="text-left py-2 text-muted-foreground font-semibold text-xs">Size</th>
-                          <th className="text-right py-2 text-muted-foreground font-semibold text-xs">From Price</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {cabins?.map(cabin => (
-                          <tr key={cabin.id} className="border-b border-border/50">
-                            <td className="py-2 font-semibold text-foreground">{cabin.name}</td>
-                            <td className="py-2 text-muted-foreground">{cabin.deck}</td>
-                            <td className="py-2 text-muted-foreground">{cabin.size_sqft} sq ft</td>
-                            <td className="py-2 text-right font-heading font-bold text-primary">${Math.round(cabin.base_price_usd)}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
               </section>
             )}
 
