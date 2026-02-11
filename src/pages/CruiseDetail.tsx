@@ -437,7 +437,7 @@ const CruiseDetail = () => {
                         <div className="flex flex-col md:flex-row gap-4">
                           <div className="relative w-full md:w-56 h-40 md:h-auto shrink-0">
                             <img
-                              src={`${cabin.image_url || categoryImages[cabin.category] || "/images/destinations/bahamas.jpg"}?v=4`}
+                              src={`${cabin.image_url || categoryImages[cabin.category] || "/images/destinations/bahamas.jpg"}?v=5`}
                               alt={cabin.name}
                               className="w-full h-full object-cover rounded-sm"
                             />
