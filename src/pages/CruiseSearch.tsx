@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { fetchCruises, fetchDestinations, fetchCruiseLines } from "@/lib/cruiseApi";
+import { fetchCruises, fetchDestinations, fetchCruiseLines, fetchPorts, fetchShips } from "@/lib/cruiseApi";
 import { Search, Star, Ship, MapPin, Calendar, Filter, X } from "lucide-react";
 import TopBar from "@/components/TopBar";
 import Header from "@/components/Header";
@@ -12,33 +12,45 @@ const CruiseSearch = () => {
   const [searchParams] = useSearchParams();
   const [destinationId, setDestinationId] = useState(searchParams.get("destination") || "");
   const [cruiseLineId, setCruiseLineId] = useState(searchParams.get("cruiseLine") || "");
+  const [port, setPort] = useState(searchParams.get("port") || "");
+  const [ship, setShip] = useState(searchParams.get("ship") || "");
   const [duration, setDuration] = useState(searchParams.get("duration") || "");
   const [searchTerm, setSearchTerm] = useState(searchParams.get("search") || "");
   const [showFilters, setShowFilters] = useState(
-    !!(searchParams.get("destination") || searchParams.get("cruiseLine") || searchParams.get("duration"))
+    !!(searchParams.get("destination") || searchParams.get("cruiseLine") || searchParams.get("duration") || searchParams.get("port") || searchParams.get("ship"))
   );
 
   // Sync URL params on navigation
   useEffect(() => {
     setDestinationId(searchParams.get("destination") || "");
     setCruiseLineId(searchParams.get("cruiseLine") || "");
+    setPort(searchParams.get("port") || "");
+    setShip(searchParams.get("ship") || "");
     setDuration(searchParams.get("duration") || "");
     setSearchTerm(searchParams.get("search") || "");
-    if (searchParams.get("destination") || searchParams.get("cruiseLine") || searchParams.get("duration")) {
+    if (searchParams.get("destination") || searchParams.get("cruiseLine") || searchParams.get("duration") || searchParams.get("port") || searchParams.get("ship")) {
       setShowFilters(true);
     }
   }, [searchParams]);
 
   const { data: destinations } = useQuery({ queryKey: ["destinations"], queryFn: fetchDestinations });
   const { data: cruiseLines } = useQuery({ queryKey: ["cruiseLines"], queryFn: fetchCruiseLines });
+  const { data: ports } = useQuery({
+    queryKey: ["ports", destinationId, cruiseLineId],
+    queryFn: () => fetchPorts({ destination: destinationId || undefined, cruiseLine: cruiseLineId || undefined }),
+  });
+  const { data: ships } = useQuery({
+    queryKey: ["ships", destinationId, cruiseLineId],
+    queryFn: () => fetchShips({ destination: destinationId || undefined, cruiseLine: cruiseLineId || undefined }),
+  });
   const { data: cruises, isLoading } = useQuery({
-    queryKey: ["cruises", destinationId, cruiseLineId, duration, searchTerm],
-    queryFn: () => fetchCruises({ destination: destinationId || undefined, cruiseLine: cruiseLineId || undefined, duration: duration || undefined, search: searchTerm || undefined }),
+    queryKey: ["cruises", destinationId, cruiseLineId, duration, port, ship, searchTerm],
+    queryFn: () => fetchCruises({ destination: destinationId || undefined, cruiseLine: cruiseLineId || undefined, duration: duration || undefined, port: port || undefined, ship: ship || undefined, search: searchTerm || undefined }),
   });
 
   const discountedPrice = (price: number, discount: number) => price * (1 - discount / 100);
 
-  const activeFilterCount = [destinationId, cruiseLineId, duration].filter(Boolean).length;
+  const activeFilterCount = [destinationId, cruiseLineId, duration, port, ship].filter(Boolean).length;
 
   return (
     <div className="min-h-screen bg-background">
@@ -69,14 +81,22 @@ const CruiseSearch = () => {
             </button>
           </div>
           {showFilters && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 animate-fade-in">
-              <select value={destinationId} onChange={(e) => setDestinationId(e.target.value)} className="px-4 py-3 rounded-2xl text-sm bg-white text-foreground shadow-md border-0 focus:ring-2 focus:ring-accent focus:outline-none">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-2 animate-fade-in">
+              <select value={destinationId} onChange={(e) => { setDestinationId(e.target.value); setPort(""); setShip(""); }} className="px-4 py-3 rounded-2xl text-sm bg-white text-foreground shadow-md border-0 focus:ring-2 focus:ring-accent focus:outline-none">
                 <option value="">All Destinations</option>
                 {destinations?.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
               </select>
-              <select value={cruiseLineId} onChange={(e) => setCruiseLineId(e.target.value)} className="px-4 py-3 rounded-2xl text-sm bg-white text-foreground shadow-md border-0 focus:ring-2 focus:ring-accent focus:outline-none">
+              <select value={cruiseLineId} onChange={(e) => { setCruiseLineId(e.target.value); setPort(""); setShip(""); }} className="px-4 py-3 rounded-2xl text-sm bg-white text-foreground shadow-md border-0 focus:ring-2 focus:ring-accent focus:outline-none">
                 <option value="">All Cruise Lines</option>
                 {cruiseLines?.map((cl) => <option key={cl.id} value={cl.id}>{cl.name}</option>)}
+              </select>
+              <select value={port} onChange={(e) => setPort(e.target.value)} className="px-4 py-3 rounded-2xl text-sm bg-white text-foreground shadow-md border-0 focus:ring-2 focus:ring-accent focus:outline-none">
+                <option value="">All Ports</option>
+                {ports?.map((p) => <option key={p} value={p}>{p}</option>)}
+              </select>
+              <select value={ship} onChange={(e) => setShip(e.target.value)} className="px-4 py-3 rounded-2xl text-sm bg-white text-foreground shadow-md border-0 focus:ring-2 focus:ring-accent focus:outline-none">
+                <option value="">All Ships</option>
+                {ships?.map((s) => <option key={s} value={s}>{s}</option>)}
               </select>
               <select value={duration} onChange={(e) => setDuration(e.target.value)} className="px-4 py-3 rounded-2xl text-sm bg-white text-foreground shadow-md border-0 focus:ring-2 focus:ring-accent focus:outline-none">
                 <option value="">All Lengths</option>
@@ -88,7 +108,7 @@ const CruiseSearch = () => {
           )}
           {activeFilterCount > 0 && (
             <button
-              onClick={() => { setDestinationId(""); setCruiseLineId(""); setDuration(""); setSearchTerm(""); }}
+              onClick={() => { setDestinationId(""); setCruiseLineId(""); setDuration(""); setPort(""); setShip(""); setSearchTerm(""); }}
               className="text-white/90 text-xs mt-2 flex items-center gap-1 hover:text-white transition-colors"
             >
               <X className="w-3 h-3" /> Clear all filters

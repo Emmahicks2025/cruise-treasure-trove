@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
-import { fetchDestinations, fetchCruiseLines } from "@/lib/cruiseApi";
+import { fetchDestinations, fetchCruiseLines, fetchPorts, fetchShips } from "@/lib/cruiseApi";
 
 const months = [
   "All Months", "Feb 2026", "Mar 2026", "Apr 2026", "May 2026", "Jun 2026",
@@ -15,16 +15,42 @@ const SearchForm = () => {
   const [activeTab, setActiveTab] = useState<"cruises" | "tours">("cruises");
   const [destinationId, setDestinationId] = useState("");
   const [cruiseLineId, setCruiseLineId] = useState("");
+  const [port, setPort] = useState("");
+  const [ship, setShip] = useState("");
   const [duration, setDuration] = useState("");
   const navigate = useNavigate();
 
   const { data: destinations } = useQuery({ queryKey: ["destinations"], queryFn: fetchDestinations });
   const { data: cruiseLines } = useQuery({ queryKey: ["cruiseLines"], queryFn: fetchCruiseLines });
 
+  const { data: ports } = useQuery({
+    queryKey: ["ports", destinationId, cruiseLineId],
+    queryFn: () => fetchPorts({ destination: destinationId || undefined, cruiseLine: cruiseLineId || undefined }),
+  });
+
+  const { data: ships } = useQuery({
+    queryKey: ["ships", destinationId, cruiseLineId],
+    queryFn: () => fetchShips({ destination: destinationId || undefined, cruiseLine: cruiseLineId || undefined }),
+  });
+
+  const handleDestinationChange = (value: string) => {
+    setDestinationId(value);
+    setPort("");
+    setShip("");
+  };
+
+  const handleCruiseLineChange = (value: string) => {
+    setCruiseLineId(value);
+    setPort("");
+    setShip("");
+  };
+
   const handleSearch = () => {
     const params = new URLSearchParams();
     if (destinationId) params.set("destination", destinationId);
     if (cruiseLineId) params.set("cruiseLine", cruiseLineId);
+    if (port) params.set("port", port);
+    if (ship) params.set("ship", ship);
     if (duration) params.set("duration", duration);
     navigate(`/cruises?${params.toString()}`);
   };
@@ -56,16 +82,22 @@ const SearchForm = () => {
               Cruise Deals on All Major Cruise Lines
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-4">
-              <select value={destinationId} onChange={(e) => setDestinationId(e.target.value)} className={selectClass}>
+              <select value={destinationId} onChange={(e) => handleDestinationChange(e.target.value)} className={selectClass}>
                 <option value="">All Destinations</option>
                 {destinations?.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
               </select>
-              <select value={cruiseLineId} onChange={(e) => setCruiseLineId(e.target.value)} className={selectClass}>
+              <select value={cruiseLineId} onChange={(e) => handleCruiseLineChange(e.target.value)} className={selectClass}>
                 <option value="">All Cruise Lines</option>
                 {cruiseLines?.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
-              <select className={selectClass}><option>All Ships</option></select>
-              <select className={selectClass}><option>All Ports</option></select>
+              <select value={ship} onChange={(e) => setShip(e.target.value)} className={selectClass}>
+                <option value="">All Ships</option>
+                {ships?.map(s => <option key={s} value={s}>{s}</option>)}
+              </select>
+              <select value={port} onChange={(e) => setPort(e.target.value)} className={selectClass}>
+                <option value="">All Ports</option>
+                {ports?.map(p => <option key={p} value={p}>{p}</option>)}
+              </select>
               <select className={selectClass}>
                 {months.map(m => <option key={m}>{m}</option>)}
               </select>

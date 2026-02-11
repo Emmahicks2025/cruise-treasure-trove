@@ -66,6 +66,8 @@ export async function fetchCruises(filters?: {
   minPrice?: number;
   maxPrice?: number;
   duration?: string;
+  port?: string;
+  ship?: string;
   search?: string;
 }) {
   let query = supabase
@@ -93,6 +95,12 @@ export async function fetchCruises(filters?: {
     query = query.gte("duration_days", 6).lte("duration_days", 9);
   } else if (filters?.duration === "10+") {
     query = query.gte("duration_days", 10);
+  }
+  if (filters?.port) {
+    query = query.or(`departure_port.eq.${filters.port},arrival_port.eq.${filters.port}`);
+  }
+  if (filters?.ship) {
+    query = query.eq("ship_name", filters.ship);
   }
   if (filters?.search) {
     query = query.ilike("name", `%${filters.search}%`);
@@ -139,6 +147,53 @@ export async function fetchCruiseLines() {
     .order("name");
   if (error) throw error;
   return data as CruiseLine[];
+}
+
+export async function fetchPorts(filters?: { destination?: string; cruiseLine?: string }) {
+  let query = supabase
+    .from("cruises")
+    .select("departure_port, arrival_port, destination_id, cruise_line_id")
+    .eq("status", "available");
+
+  if (filters?.destination) {
+    query = query.eq("destination_id", filters.destination);
+  }
+  if (filters?.cruiseLine) {
+    query = query.eq("cruise_line_id", filters.cruiseLine);
+  }
+
+  const { data, error } = await query;
+  if (error) throw error;
+
+  const portSet = new Set<string>();
+  data?.forEach((c) => {
+    if (c.departure_port) portSet.add(c.departure_port);
+    if (c.arrival_port) portSet.add(c.arrival_port);
+  });
+  return Array.from(portSet).sort();
+}
+
+export async function fetchShips(filters?: { destination?: string; cruiseLine?: string }) {
+  let query = supabase
+    .from("cruises")
+    .select("ship_name, destination_id, cruise_line_id")
+    .eq("status", "available");
+
+  if (filters?.destination) {
+    query = query.eq("destination_id", filters.destination);
+  }
+  if (filters?.cruiseLine) {
+    query = query.eq("cruise_line_id", filters.cruiseLine);
+  }
+
+  const { data, error } = await query;
+  if (error) throw error;
+
+  const shipSet = new Set<string>();
+  data?.forEach((c) => {
+    if (c.ship_name) shipSet.add(c.ship_name);
+  });
+  return Array.from(shipSet).sort();
 }
 
 export interface DiningVenue {
