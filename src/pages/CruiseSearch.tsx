@@ -46,21 +46,21 @@ const CruiseSearch = () => {
       <Header />
       <MainNav />
 
-      <div className="bg-primary py-6">
+      <div className="bg-gradient-to-r from-primary via-primary/95 to-ocean py-8">
         <div className="max-w-7xl mx-auto px-4">
-          <h1 className="text-2xl font-heading font-bold text-primary-foreground mb-4">Search Cruises</h1>
+          <h1 className="text-2xl font-heading font-bold text-white mb-4">Search Cruises</h1>
           <div className="flex gap-2 mb-3">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <input
                 type="text"
                 placeholder="Search cruises by name, ship, destination..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 rounded-sm text-sm bg-background text-foreground"
+                className="w-full pl-11 pr-4 py-3 rounded-2xl text-sm bg-white text-foreground shadow-lg border-0 focus:ring-2 focus:ring-accent focus:outline-none"
               />
             </div>
-            <button onClick={() => setShowFilters(!showFilters)} className="btn-search px-4 py-2 rounded-sm flex items-center gap-2">
+            <button onClick={() => setShowFilters(!showFilters)} className="btn-search px-5 py-3 rounded-2xl flex items-center gap-2">
               <Filter className="w-4 h-4" />
               Filters
               {activeFilterCount > 0 && (
@@ -70,15 +70,15 @@ const CruiseSearch = () => {
           </div>
           {showFilters && (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-2 animate-fade-in">
-              <select value={destinationId} onChange={(e) => setDestinationId(e.target.value)} className="px-3 py-2 rounded-sm text-sm bg-background text-foreground">
+              <select value={destinationId} onChange={(e) => setDestinationId(e.target.value)} className="px-4 py-3 rounded-2xl text-sm bg-white text-foreground shadow-md border-0 focus:ring-2 focus:ring-accent focus:outline-none">
                 <option value="">All Destinations</option>
                 {destinations?.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
               </select>
-              <select value={cruiseLineId} onChange={(e) => setCruiseLineId(e.target.value)} className="px-3 py-2 rounded-sm text-sm bg-background text-foreground">
+              <select value={cruiseLineId} onChange={(e) => setCruiseLineId(e.target.value)} className="px-4 py-3 rounded-2xl text-sm bg-white text-foreground shadow-md border-0 focus:ring-2 focus:ring-accent focus:outline-none">
                 <option value="">All Cruise Lines</option>
                 {cruiseLines?.map((cl) => <option key={cl.id} value={cl.id}>{cl.name}</option>)}
               </select>
-              <select value={duration} onChange={(e) => setDuration(e.target.value)} className="px-3 py-2 rounded-sm text-sm bg-background text-foreground">
+              <select value={duration} onChange={(e) => setDuration(e.target.value)} className="px-4 py-3 rounded-2xl text-sm bg-white text-foreground shadow-md border-0 focus:ring-2 focus:ring-accent focus:outline-none">
                 <option value="">All Lengths</option>
                 <option value="1-5">1-5 Days</option>
                 <option value="6-9">6-9 Days</option>
@@ -89,7 +89,7 @@ const CruiseSearch = () => {
           {activeFilterCount > 0 && (
             <button
               onClick={() => { setDestinationId(""); setCruiseLineId(""); setDuration(""); setSearchTerm(""); }}
-              className="text-primary-foreground text-xs mt-2 flex items-center gap-1 hover:opacity-80"
+              className="text-white/90 text-xs mt-2 flex items-center gap-1 hover:text-white transition-colors"
             >
               <X className="w-3 h-3" /> Clear all filters
             </button>
@@ -97,7 +97,7 @@ const CruiseSearch = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-6">
+      <div className="max-w-7xl mx-auto px-4 py-8">
         <p className="text-sm text-muted-foreground mb-4">
           {isLoading ? "Loading..." : `${cruises?.length || 0} cruises found`}
         </p>
