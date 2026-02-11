@@ -1,37 +1,55 @@
-const destinations = [
-  { image: "/images/destinations/bahamas.jpg", name: "Bahamas", price: "from $237" },
-  { image: "/images/destinations/alaska.jpg", name: "Alaska", price: "from $616" },
-  { image: "/images/destinations/mediterranean.jpg", name: "Mediterranean", price: "Call" },
-  { image: "/images/destinations/north-europe.jpg", name: "North Europe", price: "from $526" },
-  { image: "/images/destinations/panama-canal.jpg", name: "Panama Canal", price: "from $1,008" },
-  { image: "/images/destinations/river-cruises.jpg", name: "River Cruises", price: "from $3,544" },
-  { image: "/images/destinations/land-tours.jpg", name: "Land Tours", price: "from $2,609" },
-];
+import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { fetchDestinations } from "@/lib/cruiseApi";
 
-const FeaturedDestinations = () => (
-  <section className="py-8">
-    <div className="max-w-7xl mx-auto px-4">
-      <h3 className="text-xl font-heading font-bold text-primary text-center mb-6">
-        Featured Destinations
-      </h3>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3">
-        {destinations.map((dest) => (
-          <div key={dest.name} className="deal-card cursor-pointer text-center">
-            <img
-              src={dest.image}
-              alt={dest.name}
-              className="w-full h-28 object-cover"
-            />
-            <div className="p-2">
-              <h4 className="font-bold text-sm text-foreground">{dest.name}</h4>
-              <p className="text-xs text-primary font-semibold">{dest.price}</p>
-              <button className="btn-book mt-1.5 text-[10px] px-3 py-1 w-full">BOOK</button>
+const destImages: Record<string, string> = {
+  "bahamas": "/images/destinations/bahamas.jpg",
+  "alaska-inside-passage": "/images/destinations/alaska.jpg",
+  "mediterranean-western": "/images/destinations/mediterranean.jpg",
+  "northern-europe": "/images/destinations/north-europe.jpg",
+  "panama-canal": "/images/destinations/panama-canal.jpg",
+  "rhine-river": "/images/destinations/river-cruises.jpg",
+  "danube-river": "/images/destinations/river-cruises.jpg",
+  "caribbean-eastern": "/images/destinations/bahamas.jpg",
+  "caribbean-western": "/images/destinations/bahamas.jpg",
+  "hawaii": "/images/destinations/land-tours.jpg",
+};
+
+const FeaturedDestinations = () => {
+  const navigate = useNavigate();
+  const { data: destinations } = useQuery({ queryKey: ["destinations"], queryFn: fetchDestinations });
+
+  const featured = destinations?.slice(0, 7) || [];
+
+  return (
+    <section className="py-8">
+      <div className="max-w-7xl mx-auto px-4">
+        <h3 className="text-xl font-heading font-bold text-primary text-center mb-6">
+          Featured Destinations
+        </h3>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3">
+          {featured.map((dest) => (
+            <div
+              key={dest.id}
+              onClick={() => navigate(`/cruises?destination=${dest.id}`)}
+              className="deal-card cursor-pointer text-center"
+            >
+              <img
+                src={destImages[dest.slug] || "/images/destinations/mediterranean.jpg"}
+                alt={dest.name}
+                className="w-full h-28 object-cover"
+              />
+              <div className="p-2">
+                <h4 className="font-bold text-sm text-foreground">{dest.name}</h4>
+                <p className="text-xs text-primary font-semibold">{dest.region}</p>
+                <button className="btn-book mt-1.5 text-[10px] px-3 py-1 w-full">VIEW CRUISES</button>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 export default FeaturedDestinations;

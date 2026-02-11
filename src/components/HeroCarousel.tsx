@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const slides = [
@@ -10,6 +11,7 @@ const slides = [
     discount: "40% OFF",
     discountPrefix: "Up to",
     perks: ["Up to $750 Onboard Credit", "Kids Sail FREE"],
+    search: "MSC",
   },
   {
     image: "/images/slideshow/hero-cruise.jpg",
@@ -19,6 +21,7 @@ const slides = [
     discountPrefix: "",
     discountSuffix: "Second Guest",
     perks: ["Up to $1,000 Instant Savings", "3rd & 4th Sail FREE"],
+    search: "Royal Caribbean",
   },
   {
     image: "/images/slideshow/alaska-cruise.jpg",
@@ -28,11 +31,13 @@ const slides = [
     discountPrefix: "",
     discountSuffix: "2nd Guest",
     perks: ["3rd - 5th Guests FREE", "Up to $700 Instant Savings"],
+    search: "Alaska",
   },
 ];
 
 const HeroCarousel = () => {
   const [current, setCurrent] = useState(0);
+  const navigate = useNavigate();
 
   const next = useCallback(() => setCurrent((c) => (c + 1) % slides.length), []);
   const prev = useCallback(() => setCurrent((c) => (c - 1 + slides.length) % slides.length), []);
@@ -85,7 +90,12 @@ const HeroCarousel = () => {
                 + {perk}
               </p>
             ))}
-            <button className="btn-book mt-4 text-base px-8 py-3">BOOK NOW</button>
+            <button
+              onClick={() => navigate(`/cruises?search=${encodeURIComponent(slide.search)}`)}
+              className="btn-book mt-4 text-base px-8 py-3"
+            >
+              BOOK NOW
+            </button>
           </div>
         </div>
       </div>

@@ -1,16 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
-
-const destinations = [
-  "Caribbean/Bahamas", "Alaska", "Mediterranean", "Northern Europe", "Panama Canal",
-  "Bermuda", "Hawaii/Tahiti", "Mexico", "South America", "Transatlantic", "World Cruises"
-];
-
-const cruiseLines = [
-  "All Cruise Lines", "Carnival Cruise Line", "Celebrity Cruises", "Costa Cruises",
-  "Disney Cruise Line", "Holland America", "MSC Cruises", "Norwegian Cruise Line",
-  "Princess Cruises", "Royal Caribbean", "Viking Cruises"
-];
+import { fetchDestinations, fetchCruiseLines } from "@/lib/cruiseApi";
 
 const months = [
   "All Months", "Feb 2026", "Mar 2026", "Apr 2026", "May 2026", "Jun 2026",
@@ -21,6 +13,21 @@ const lengths = ["All Lengths", "1-2 Days", "3-5 Days", "6-9 Days", "10+ Days"];
 
 const SearchForm = () => {
   const [activeTab, setActiveTab] = useState<"cruises" | "tours">("cruises");
+  const [destinationId, setDestinationId] = useState("");
+  const [cruiseLineId, setCruiseLineId] = useState("");
+  const [duration, setDuration] = useState("");
+  const navigate = useNavigate();
+
+  const { data: destinations } = useQuery({ queryKey: ["destinations"], queryFn: fetchDestinations });
+  const { data: cruiseLines } = useQuery({ queryKey: ["cruiseLines"], queryFn: fetchCruiseLines });
+
+  const handleSearch = () => {
+    const params = new URLSearchParams();
+    if (destinationId) params.set("destination", destinationId);
+    if (cruiseLineId) params.set("cruiseLine", cruiseLineId);
+    if (duration) params.set("duration", duration);
+    navigate(`/cruises?${params.toString()}`);
+  };
 
   return (
     <div className="bg-secondary py-4">
@@ -54,11 +61,21 @@ const SearchForm = () => {
               Cruise Deals on All Major Cruise Lines
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-2 mb-3">
-              <select className="border border-border rounded-sm px-3 py-2 text-sm text-foreground bg-background focus:ring-2 focus:ring-ocean focus:outline-none">
-                {destinations.map(d => <option key={d}>{d}</option>)}
+              <select
+                value={destinationId}
+                onChange={(e) => setDestinationId(e.target.value)}
+                className="border border-border rounded-sm px-3 py-2 text-sm text-foreground bg-background focus:ring-2 focus:ring-ocean focus:outline-none"
+              >
+                <option value="">All Destinations</option>
+                {destinations?.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
               </select>
-              <select className="border border-border rounded-sm px-3 py-2 text-sm text-foreground bg-background focus:ring-2 focus:ring-ocean focus:outline-none">
-                {cruiseLines.map(c => <option key={c}>{c}</option>)}
+              <select
+                value={cruiseLineId}
+                onChange={(e) => setCruiseLineId(e.target.value)}
+                className="border border-border rounded-sm px-3 py-2 text-sm text-foreground bg-background focus:ring-2 focus:ring-ocean focus:outline-none"
+              >
+                <option value="">All Cruise Lines</option>
+                {cruiseLines?.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
               <select className="border border-border rounded-sm px-3 py-2 text-sm text-foreground bg-background focus:ring-2 focus:ring-ocean focus:outline-none">
                 <option>All Ships</option>
@@ -69,8 +86,15 @@ const SearchForm = () => {
               <select className="border border-border rounded-sm px-3 py-2 text-sm text-foreground bg-background focus:ring-2 focus:ring-ocean focus:outline-none">
                 {months.map(m => <option key={m}>{m}</option>)}
               </select>
-              <select className="border border-border rounded-sm px-3 py-2 text-sm text-foreground bg-background focus:ring-2 focus:ring-ocean focus:outline-none">
-                {lengths.map(l => <option key={l}>{l}</option>)}
+              <select
+                value={duration}
+                onChange={(e) => setDuration(e.target.value)}
+                className="border border-border rounded-sm px-3 py-2 text-sm text-foreground bg-background focus:ring-2 focus:ring-ocean focus:outline-none"
+              >
+                {lengths.map(l => {
+                  const val = l === "All Lengths" ? "" : l === "1-2 Days" ? "1-5" : l === "3-5 Days" ? "1-5" : l === "6-9 Days" ? "6-9" : "10+";
+                  return <option key={l} value={val}>{l}</option>;
+                })}
               </select>
             </div>
             <div className="flex flex-wrap items-center justify-between gap-3">
@@ -95,15 +119,15 @@ const SearchForm = () => {
                     <option>State/Province</option>
                   </select>
                 </div>
-                <button className="btn-search px-8 py-2.5 rounded-sm flex items-center gap-2">
+                <button onClick={handleSearch} className="btn-search px-8 py-2.5 rounded-sm flex items-center gap-2">
                   <Search className="w-4 h-4" />
                   SEARCH
                 </button>
               </div>
             </div>
             <div className="flex gap-4 mt-2 text-xs">
-              <a href="#" className="text-ocean hover:underline">Cruise Port Search »</a>
-              <a href="#" className="text-ocean hover:underline">Advanced Search »</a>
+              <button onClick={() => navigate("/cruises")} className="text-ocean hover:underline">Cruise Port Search »</button>
+              <button onClick={() => navigate("/cruises")} className="text-ocean hover:underline">Advanced Search »</button>
             </div>
           </div>
         )}
@@ -112,7 +136,7 @@ const SearchForm = () => {
           <div className="text-center py-8">
             <h2 className="text-lg font-heading font-bold text-primary mb-3">Tour Search</h2>
             <p className="text-muted-foreground">Search available land tour packages</p>
-            <button className="btn-search px-8 py-2.5 rounded-sm mt-4">SEARCH TOURS</button>
+            <button onClick={() => navigate("/cruises")} className="btn-search px-8 py-2.5 rounded-sm mt-4">SEARCH TOURS</button>
           </div>
         )}
       </div>
