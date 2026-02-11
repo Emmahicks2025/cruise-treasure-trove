@@ -1,12 +1,39 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import TopBar from "@/components/TopBar";
+import Header from "@/components/Header";
+import MainNav from "@/components/MainNav";
+import SearchForm from "@/components/SearchForm";
+import HeroCarousel from "@/components/HeroCarousel";
+import CountdownBanner from "@/components/CountdownBanner";
+import DailyDeals from "@/components/DailyDeals";
+import ExclusiveOffers from "@/components/ExclusiveOffers";
+import FeaturedDestinations from "@/components/FeaturedDestinations";
+import PopularCruises from "@/components/PopularCruises";
+import SpecialOffers from "@/components/SpecialOffers";
+import FeaturedDeals from "@/components/FeaturedDeals";
+import WebinarBanner from "@/components/WebinarBanner";
+import WhyBookWithUs from "@/components/WhyBookWithUs";
+import Footer from "@/components/Footer";
+import MemberBanner from "@/components/MemberBanner";
 
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-background">
+      <TopBar />
+      <Header />
+      <MainNav />
+      <SearchForm />
+      <HeroCarousel />
+      <CountdownBanner />
+      <DailyDeals />
+      <ExclusiveOffers />
+      <FeaturedDestinations />
+      <PopularCruises />
+      <SpecialOffers />
+      <FeaturedDeals />
+      <WebinarBanner />
+      <WhyBookWithUs />
+      <Footer />
+      <MemberBanner />
     </div>
   );
 };
