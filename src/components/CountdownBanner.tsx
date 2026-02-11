@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Anchor } from "lucide-react";
 
 const CountdownBanner = () => {
   const [timeLeft, setTimeLeft] = useState({ hours: 20, minutes: 57 });
+  const navigate = useNavigate();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -18,7 +20,7 @@ const CountdownBanner = () => {
   }, []);
 
   return (
-    <div className="countdown-bar">
+    <div className="countdown-bar cursor-pointer" onClick={() => navigate("/cruises?search=Royal Caribbean")}>
       <div className="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Anchor className="w-6 h-6 text-primary" />

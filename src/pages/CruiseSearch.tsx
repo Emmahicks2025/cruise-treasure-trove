@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { fetchCruises, fetchDestinations, fetchCruiseLines } from "@/lib/cruiseApi";
 import { Search, Star, Ship, MapPin, Calendar, Filter, X } from "lucide-react";
 import TopBar from "@/components/TopBar";
@@ -9,11 +9,25 @@ import MainNav from "@/components/MainNav";
 import Footer from "@/components/Footer";
 
 const CruiseSearch = () => {
-  const [destinationId, setDestinationId] = useState("");
-  const [cruiseLineId, setCruiseLineId] = useState("");
-  const [duration, setDuration] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [showFilters, setShowFilters] = useState(false);
+  const [searchParams] = useSearchParams();
+  const [destinationId, setDestinationId] = useState(searchParams.get("destination") || "");
+  const [cruiseLineId, setCruiseLineId] = useState(searchParams.get("cruiseLine") || "");
+  const [duration, setDuration] = useState(searchParams.get("duration") || "");
+  const [searchTerm, setSearchTerm] = useState(searchParams.get("search") || "");
+  const [showFilters, setShowFilters] = useState(
+    !!(searchParams.get("destination") || searchParams.get("cruiseLine") || searchParams.get("duration"))
+  );
+
+  // Sync URL params on navigation
+  useEffect(() => {
+    setDestinationId(searchParams.get("destination") || "");
+    setCruiseLineId(searchParams.get("cruiseLine") || "");
+    setDuration(searchParams.get("duration") || "");
+    setSearchTerm(searchParams.get("search") || "");
+    if (searchParams.get("destination") || searchParams.get("cruiseLine") || searchParams.get("duration")) {
+      setShowFilters(true);
+    }
+  }, [searchParams]);
 
   const { data: destinations } = useQuery({ queryKey: ["destinations"], queryFn: fetchDestinations });
   const { data: cruiseLines } = useQuery({ queryKey: ["cruiseLines"], queryFn: fetchCruiseLines });
@@ -23,6 +37,8 @@ const CruiseSearch = () => {
   });
 
   const discountedPrice = (price: number, discount: number) => price * (1 - discount / 100);
+
+  const activeFilterCount = [destinationId, cruiseLineId, duration].filter(Boolean).length;
 
   return (
     <div className="min-h-screen bg-background">
@@ -47,6 +63,9 @@ const CruiseSearch = () => {
             <button onClick={() => setShowFilters(!showFilters)} className="btn-search px-4 py-2 rounded-sm flex items-center gap-2">
               <Filter className="w-4 h-4" />
               Filters
+              {activeFilterCount > 0 && (
+                <span className="bg-red-sale text-primary-foreground text-[10px] rounded-full w-5 h-5 flex items-center justify-center font-bold">{activeFilterCount}</span>
+              )}
             </button>
           </div>
           {showFilters && (
@@ -66,6 +85,14 @@ const CruiseSearch = () => {
                 <option value="10+">10+ Days</option>
               </select>
             </div>
+          )}
+          {activeFilterCount > 0 && (
+            <button
+              onClick={() => { setDestinationId(""); setCruiseLineId(""); setDuration(""); setSearchTerm(""); }}
+              className="text-primary-foreground text-xs mt-2 flex items-center gap-1 hover:opacity-80"
+            >
+              <X className="w-3 h-3" /> Clear all filters
+            </button>
           )}
         </div>
       </div>

@@ -1,26 +1,8 @@
 import { useState } from "react";
-import { Anchor, Ship, MapPin } from "lucide-react";
-
-const cruiseDeals = [
-  { line: "Carnival Cruise Line", trip: "6 Days Bahamas", price: "$344" },
-  { line: "MSC Cruises", trip: "7 Days W. Caribbean", price: "$319" },
-  { line: "Costa Cruises", trip: "7 Days W. Mediterranean", price: "$449" },
-  { line: "Princess Cruises", trip: "7 Days W. Caribbean", price: "$473" },
-  { line: "MSC Cruises", trip: "7 Days Europe Coastal", price: "$495" },
-  { line: "Celebrity Cruises", trip: "6 Days W. Caribbean", price: "$558" },
-  { line: "Royal Caribbean", trip: "6 Days E. Caribbean", price: "$506" },
-  { line: "Norwegian Cruise Line", trip: "7 Days Mexico-Pacific", price: "$588" },
-  { line: "Royal Caribbean", trip: "7 Days Alaska-N./S.", price: "$507" },
-  { line: "Holland America", trip: "7 Days Alaska-Inside", price: "$649" },
-  { line: "Princess Cruises", trip: "7 Days Alaska-N./S.", price: "$622" },
-  { line: "Celebrity Cruises", trip: "7 Days Bermuda", price: "$873" },
-  { line: "Celestyal Cruises", trip: "7 Days Mediterranean-East", price: "$921" },
-  { line: "Cunard", trip: "20 Days Panama Canal", price: "$1,424" },
-  { line: "Azamara Cruises", trip: "7 Days Greece/Turkey", price: "$1,473" },
-  { line: "Oceania Cruises", trip: "7 Days E. Mediterranean", price: "$1,605" },
-  { line: "AmaWaterways", trip: "7 Days Rhine River", price: "$2,849" },
-  { line: "Seabourn", trip: "7 Days Alaska", price: "$3,260" },
-];
+import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { fetchCruises } from "@/lib/cruiseApi";
+import { Ship, MapPin } from "lucide-react";
 
 const landTours = [
   { line: "CIE Tours", trip: "7 Days Taste of Ireland", price: "$2,195" },
@@ -33,7 +15,13 @@ const tabs = ["Featured Cruise Deals", "Featured Land Tours"];
 
 const FeaturedDeals = () => {
   const [activeTab, setActiveTab] = useState(0);
-  const data = activeTab === 0 ? cruiseDeals : landTours;
+
+  const { data: cruises } = useQuery({
+    queryKey: ["featuredDeals"],
+    queryFn: () => fetchCruises(),
+  });
+
+  const cruiseDeals = cruises?.slice(0, 18) || [];
 
   return (
     <section className="py-8">
@@ -55,17 +43,32 @@ const FeaturedDeals = () => {
           ))}
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-          {data.slice(0, 18).map((deal, i) => (
-            <div key={i} className="offer-card text-center py-4 px-3">
-              <div className="text-primary mb-2">
-                {activeTab === 0 ? <Ship className="w-6 h-6 mx-auto" /> : <MapPin className="w-6 h-6 mx-auto" />}
-              </div>
-              <p className="text-[10px] font-semibold text-muted-foreground mb-1">{deal.line}</p>
-              <p className="text-xs font-bold text-foreground mb-2">{deal.trip}</p>
-              <p className="text-xl font-heading font-black text-primary">{deal.price}</p>
-              <button className="btn-book mt-2 text-[10px] px-4 py-1">BOOK</button>
-            </div>
-          ))}
+          {activeTab === 0
+            ? cruiseDeals.map((deal) => {
+                const discounted = Math.round(deal.base_price_usd * (1 - deal.discount_percent / 100));
+                return (
+                  <Link to={`/cruise/${deal.slug}`} key={deal.id} className="offer-card text-center py-4 px-3 hover:shadow-md transition-shadow">
+                    <div className="text-primary mb-2">
+                      <Ship className="w-6 h-6 mx-auto" />
+                    </div>
+                    <p className="text-[10px] font-semibold text-muted-foreground mb-1">{deal.cruise_lines?.name}</p>
+                    <p className="text-xs font-bold text-foreground mb-2">{deal.duration_days} Days {deal.destinations?.name}</p>
+                    <p className="text-xl font-heading font-black text-primary">${discounted}</p>
+                    <span className="btn-book mt-2 text-[10px] px-4 py-1 inline-block">VIEW</span>
+                  </Link>
+                );
+              })
+            : landTours.map((deal, i) => (
+                <div key={i} className="offer-card text-center py-4 px-3">
+                  <div className="text-primary mb-2">
+                    <MapPin className="w-6 h-6 mx-auto" />
+                  </div>
+                  <p className="text-[10px] font-semibold text-muted-foreground mb-1">{deal.line}</p>
+                  <p className="text-xs font-bold text-foreground mb-2">{deal.trip}</p>
+                  <p className="text-xl font-heading font-black text-primary">{deal.price}</p>
+                  <span className="btn-book mt-2 text-[10px] px-4 py-1 inline-block">VIEW</span>
+                </div>
+              ))}
         </div>
       </div>
     </section>
