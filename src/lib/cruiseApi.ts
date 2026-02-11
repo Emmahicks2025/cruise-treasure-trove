@@ -141,6 +141,70 @@ export async function fetchCruiseLines() {
   return data as CruiseLine[];
 }
 
+export interface DiningVenue {
+  id: string;
+  cruise_line_id: string;
+  name: string;
+  description: string | null;
+  cuisine_type: string | null;
+  meal_periods: string[];
+  dress_code: string;
+  surcharge_usd: number;
+  is_included: boolean;
+  sort_order: number;
+}
+
+export interface EntertainmentVenue {
+  id: string;
+  cruise_line_id: string;
+  name: string;
+  description: string | null;
+  category: string;
+  schedule: string | null;
+  is_complimentary: boolean;
+  sort_order: number;
+}
+
+export interface DeckPlan {
+  id: string;
+  cruise_line_id: string;
+  deck_number: number;
+  deck_name: string;
+  features: string[];
+  cabin_categories: string[];
+  sort_order: number;
+}
+
+export async function fetchDiningVenues(cruiseLineId: string) {
+  const { data, error } = await supabase
+    .from("dining_venues")
+    .select("*")
+    .eq("cruise_line_id", cruiseLineId)
+    .order("sort_order");
+  if (error) throw error;
+  return data as DiningVenue[];
+}
+
+export async function fetchEntertainmentVenues(cruiseLineId: string) {
+  const { data, error } = await supabase
+    .from("entertainment_venues")
+    .select("*")
+    .eq("cruise_line_id", cruiseLineId)
+    .order("sort_order");
+  if (error) throw error;
+  return data as EntertainmentVenue[];
+}
+
+export async function fetchDeckPlans(cruiseLineId: string) {
+  const { data, error } = await supabase
+    .from("deck_plans")
+    .select("*")
+    .eq("cruise_line_id", cruiseLineId)
+    .order("sort_order");
+  if (error) throw error;
+  return data as DeckPlan[];
+}
+
 export async function createBooking(booking: {
   cruise_id: string;
   cabin_type_id: string;

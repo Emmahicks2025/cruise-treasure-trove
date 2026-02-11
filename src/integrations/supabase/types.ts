@@ -277,6 +277,50 @@ export type Database = {
           },
         ]
       }
+      deck_plans: {
+        Row: {
+          cabin_categories: string[] | null
+          created_at: string
+          cruise_line_id: string
+          deck_name: string
+          deck_number: number
+          features: string[] | null
+          id: string
+          image_url: string | null
+          sort_order: number | null
+        }
+        Insert: {
+          cabin_categories?: string[] | null
+          created_at?: string
+          cruise_line_id: string
+          deck_name: string
+          deck_number: number
+          features?: string[] | null
+          id?: string
+          image_url?: string | null
+          sort_order?: number | null
+        }
+        Update: {
+          cabin_categories?: string[] | null
+          created_at?: string
+          cruise_line_id?: string
+          deck_name?: string
+          deck_number?: number
+          features?: string[] | null
+          id?: string
+          image_url?: string | null
+          sort_order?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deck_plans_cruise_line_id_fkey"
+            columns: ["cruise_line_id"]
+            isOneToOne: false
+            referencedRelation: "cruise_lines"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       destinations: {
         Row: {
           created_at: string
@@ -306,6 +350,165 @@ export type Database = {
           slug?: string
         }
         Relationships: []
+      }
+      dining_venues: {
+        Row: {
+          created_at: string
+          cruise_line_id: string
+          cuisine_type: string | null
+          description: string | null
+          dress_code: string | null
+          id: string
+          image_url: string | null
+          is_included: boolean | null
+          meal_periods: string[] | null
+          name: string
+          sort_order: number | null
+          surcharge_usd: number | null
+        }
+        Insert: {
+          created_at?: string
+          cruise_line_id: string
+          cuisine_type?: string | null
+          description?: string | null
+          dress_code?: string | null
+          id?: string
+          image_url?: string | null
+          is_included?: boolean | null
+          meal_periods?: string[] | null
+          name: string
+          sort_order?: number | null
+          surcharge_usd?: number | null
+        }
+        Update: {
+          created_at?: string
+          cruise_line_id?: string
+          cuisine_type?: string | null
+          description?: string | null
+          dress_code?: string | null
+          id?: string
+          image_url?: string | null
+          is_included?: boolean | null
+          meal_periods?: string[] | null
+          name?: string
+          sort_order?: number | null
+          surcharge_usd?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dining_venues_cruise_line_id_fkey"
+            columns: ["cruise_line_id"]
+            isOneToOne: false
+            referencedRelation: "cruise_lines"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      entertainment_venues: {
+        Row: {
+          category: string
+          created_at: string
+          cruise_line_id: string
+          description: string | null
+          id: string
+          image_url: string | null
+          is_complimentary: boolean | null
+          name: string
+          schedule: string | null
+          sort_order: number | null
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          cruise_line_id: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_complimentary?: boolean | null
+          name: string
+          schedule?: string | null
+          sort_order?: number | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          cruise_line_id?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_complimentary?: boolean | null
+          name?: string
+          schedule?: string | null
+          sort_order?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "entertainment_venues_cruise_line_id_fkey"
+            columns: ["cruise_line_id"]
+            isOneToOne: false
+            referencedRelation: "cruise_lines"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ship_profiles: {
+        Row: {
+          created_at: string
+          crew_count: number | null
+          cruise_line_id: string
+          description: string | null
+          dining_venues_count: number | null
+          id: string
+          image_url: string | null
+          length_ft: number | null
+          passenger_decks: number | null
+          pool_count: number | null
+          ship_name: string
+          tonnage: number | null
+          year_built: number | null
+          year_refurbished: number | null
+        }
+        Insert: {
+          created_at?: string
+          crew_count?: number | null
+          cruise_line_id: string
+          description?: string | null
+          dining_venues_count?: number | null
+          id?: string
+          image_url?: string | null
+          length_ft?: number | null
+          passenger_decks?: number | null
+          pool_count?: number | null
+          ship_name: string
+          tonnage?: number | null
+          year_built?: number | null
+          year_refurbished?: number | null
+        }
+        Update: {
+          created_at?: string
+          crew_count?: number | null
+          cruise_line_id?: string
+          description?: string | null
+          dining_venues_count?: number | null
+          id?: string
+          image_url?: string | null
+          length_ft?: number | null
+          passenger_decks?: number | null
+          pool_count?: number | null
+          ship_name?: string
+          tonnage?: number | null
+          year_built?: number | null
+          year_refurbished?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ship_profiles_cruise_line_id_fkey"
+            columns: ["cruise_line_id"]
+            isOneToOne: false
+            referencedRelation: "cruise_lines"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
