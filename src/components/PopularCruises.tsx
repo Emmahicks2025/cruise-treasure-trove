@@ -16,11 +16,13 @@ const PopularCruises = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="py-6 bg-muted">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center gap-2 mb-4">
-          <TrendingUp className="w-5 h-5 text-accent" />
-          <h3 className="font-heading font-bold text-primary uppercase text-sm tracking-wider">
+    <section className="py-8">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="flex items-center gap-2 mb-5">
+          <div className="p-2 rounded-xl bg-accent/10">
+            <TrendingUp className="w-4 h-4 text-accent" />
+          </div>
+          <h3 className="font-heading font-bold text-foreground text-sm tracking-wide">
             Popular Cruises
           </h3>
         </div>
@@ -29,7 +31,7 @@ const PopularCruises = () => {
             <button
               key={link.label}
               onClick={() => navigate(`/cruises${link.search ? `?search=${encodeURIComponent(link.search)}` : ""}`)}
-              className="bg-background border border-border rounded-sm px-4 py-2 text-sm font-semibold text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
+              className="glass px-5 py-2.5 rounded-xl text-sm font-medium text-foreground hover:bg-primary hover:text-primary-foreground hover:shadow-lg hover:shadow-primary/20 transition-all"
             >
               {link.label}
             </button>

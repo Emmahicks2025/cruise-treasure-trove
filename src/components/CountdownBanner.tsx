@@ -21,22 +21,28 @@ const CountdownBanner = () => {
 
   return (
     <div className="countdown-bar cursor-pointer" onClick={() => navigate("/cruises?search=Royal Caribbean")}>
-      <div className="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Anchor className="w-6 h-6 text-primary" />
+          <div className="p-2 rounded-xl bg-primary/10">
+            <Anchor className="w-5 h-5 text-primary" />
+          </div>
           <span className="font-heading font-bold text-primary text-sm">Royal Caribbean</span>
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-red-sale font-bold text-sm">Ends Today!</span>
-          <span className="font-heading font-bold text-foreground text-sm uppercase">
+          <span className="text-red-sale font-bold text-xs bg-red-sale/10 px-3 py-1 rounded-full">Ends Today!</span>
+          <span className="font-heading font-bold text-foreground text-sm uppercase tracking-wide">
             LAST CHANCE MEGA SALE
           </span>
         </div>
-        <div className="flex items-center gap-1 font-heading font-bold text-primary text-xl">
-          <span className="text-3xl">{timeLeft.hours}</span>
-          <span className="text-xs font-semibold text-muted-foreground">HRS</span>
-          <span className="text-3xl ml-1">{timeLeft.minutes}</span>
-          <span className="text-xs font-semibold text-muted-foreground">MINS</span>
+        <div className="flex items-center gap-2 font-heading font-bold text-primary text-xl">
+          <div className="bg-primary/10 rounded-xl px-3 py-1.5">
+            <span className="text-2xl">{timeLeft.hours}</span>
+            <span className="text-[10px] font-medium text-muted-foreground ml-0.5">HRS</span>
+          </div>
+          <div className="bg-primary/10 rounded-xl px-3 py-1.5">
+            <span className="text-2xl">{timeLeft.minutes}</span>
+            <span className="text-[10px] font-medium text-muted-foreground ml-0.5">MIN</span>
+          </div>
         </div>
       </div>
     </div>

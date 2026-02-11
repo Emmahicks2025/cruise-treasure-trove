@@ -29,114 +29,85 @@ const SearchForm = () => {
     navigate(`/cruises?${params.toString()}`);
   };
 
+  const selectClass = "glass border-0 rounded-xl px-4 py-3 text-sm text-foreground focus:ring-2 focus:ring-primary/30 focus:outline-none appearance-none cursor-pointer transition-all hover:shadow-md";
+
   return (
-    <div className="bg-secondary py-4">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex mb-3">
-          <button
-            onClick={() => setActiveTab("cruises")}
-            className={`px-6 py-2 font-bold text-sm uppercase tracking-wide transition-colors ${
-              activeTab === "cruises"
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-muted-foreground hover:bg-border"
-            }`}
-          >
-            Cruises
-          </button>
-          <button
-            onClick={() => setActiveTab("tours")}
-            className={`px-6 py-2 font-bold text-sm uppercase tracking-wide transition-colors ${
-              activeTab === "tours"
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-muted-foreground hover:bg-border"
-            }`}
-          >
-            Tours
-          </button>
+    <div className="py-6 bg-background">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="flex gap-1 mb-4">
+          {["cruises", "tours"].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab as "cruises" | "tours")}
+              className={`px-6 py-2.5 font-semibold text-sm uppercase tracking-wide rounded-xl transition-all ${
+                activeTab === tab
+                  ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                  : "bg-muted text-muted-foreground hover:bg-border"
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
         </div>
 
         {activeTab === "cruises" && (
           <div>
-            <h2 className="text-lg font-heading font-bold text-primary text-center mb-3">
+            <h2 className="text-lg font-heading font-bold text-foreground text-center mb-4">
               Cruise Deals on All Major Cruise Lines
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-2 mb-3">
-              <select
-                value={destinationId}
-                onChange={(e) => setDestinationId(e.target.value)}
-                className="border border-border rounded-sm px-3 py-2 text-sm text-foreground bg-background focus:ring-2 focus:ring-ocean focus:outline-none"
-              >
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-4">
+              <select value={destinationId} onChange={(e) => setDestinationId(e.target.value)} className={selectClass}>
                 <option value="">All Destinations</option>
                 {destinations?.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
               </select>
-              <select
-                value={cruiseLineId}
-                onChange={(e) => setCruiseLineId(e.target.value)}
-                className="border border-border rounded-sm px-3 py-2 text-sm text-foreground bg-background focus:ring-2 focus:ring-ocean focus:outline-none"
-              >
+              <select value={cruiseLineId} onChange={(e) => setCruiseLineId(e.target.value)} className={selectClass}>
                 <option value="">All Cruise Lines</option>
                 {cruiseLines?.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
-              <select className="border border-border rounded-sm px-3 py-2 text-sm text-foreground bg-background focus:ring-2 focus:ring-ocean focus:outline-none">
-                <option>All Ships</option>
-              </select>
-              <select className="border border-border rounded-sm px-3 py-2 text-sm text-foreground bg-background focus:ring-2 focus:ring-ocean focus:outline-none">
-                <option>All Ports</option>
-              </select>
-              <select className="border border-border rounded-sm px-3 py-2 text-sm text-foreground bg-background focus:ring-2 focus:ring-ocean focus:outline-none">
+              <select className={selectClass}><option>All Ships</option></select>
+              <select className={selectClass}><option>All Ports</option></select>
+              <select className={selectClass}>
                 {months.map(m => <option key={m}>{m}</option>)}
               </select>
-              <select
-                value={duration}
-                onChange={(e) => setDuration(e.target.value)}
-                className="border border-border rounded-sm px-3 py-2 text-sm text-foreground bg-background focus:ring-2 focus:ring-ocean focus:outline-none"
-              >
+              <select value={duration} onChange={(e) => setDuration(e.target.value)} className={selectClass}>
                 {lengths.map(l => {
                   const val = l === "All Lengths" ? "" : l === "1-2 Days" ? "1-5" : l === "3-5 Days" ? "1-5" : l === "6-9 Days" ? "6-9" : "10+";
                   return <option key={l} value={val}>{l}</option>;
                 })}
               </select>
             </div>
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-4 text-sm">
-                <label className="flex items-center gap-1.5 cursor-pointer">
-                  <input type="checkbox" className="accent-ocean" />
-                  <span>Senior Discounts</span>
-                </label>
-                <label className="flex items-center gap-1.5 cursor-pointer">
-                  <input type="checkbox" className="accent-ocean" />
-                  <span>Military Discounts</span>
-                </label>
-                <label className="flex items-center gap-1.5 cursor-pointer">
-                  <input type="checkbox" className="accent-ocean" />
-                  <span>Show Non-Refundable Fares</span>
-                </label>
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="flex items-center gap-5 text-sm">
+                {["Senior Discounts", "Military Discounts", "Non-Refundable Fares"].map((label) => (
+                  <label key={label} className="flex items-center gap-2 cursor-pointer group">
+                    <input type="checkbox" className="accent-primary w-4 h-4 rounded" />
+                    <span className="text-muted-foreground group-hover:text-foreground transition-colors">{label}</span>
+                  </label>
+                ))}
               </div>
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold text-red-sale uppercase">Residency Discounts</span>
-                  <select className="border border-border rounded-sm px-2 py-1.5 text-sm bg-background">
-                    <option>State/Province</option>
-                  </select>
+                  <span className="text-xs font-semibold text-red-sale uppercase">Residency</span>
+                  <select className={`${selectClass} py-2`}><option>State/Province</option></select>
                 </div>
-                <button onClick={handleSearch} className="btn-search px-8 py-2.5 rounded-sm flex items-center gap-2">
+                <button onClick={handleSearch} className="btn-search px-8 py-3 flex items-center gap-2">
                   <Search className="w-4 h-4" />
                   SEARCH
                 </button>
               </div>
             </div>
-            <div className="flex gap-4 mt-2 text-xs">
-              <button onClick={() => navigate("/cruises")} className="text-ocean hover:underline">Cruise Port Search »</button>
-              <button onClick={() => navigate("/cruises")} className="text-ocean hover:underline">Advanced Search »</button>
+            <div className="flex gap-4 mt-3 text-xs">
+              <button onClick={() => navigate("/cruises")} className="text-primary font-medium hover:underline">Cruise Port Search →</button>
+              <button onClick={() => navigate("/cruises")} className="text-primary font-medium hover:underline">Advanced Search →</button>
             </div>
           </div>
         )}
 
         {activeTab === "tours" && (
-          <div className="text-center py-8">
-            <h2 className="text-lg font-heading font-bold text-primary mb-3">Tour Search</h2>
-            <p className="text-muted-foreground">Search available land tour packages</p>
-            <button onClick={() => navigate("/cruises")} className="btn-search px-8 py-2.5 rounded-sm mt-4">SEARCH TOURS</button>
+          <div className="text-center py-10">
+            <h2 className="text-lg font-heading font-bold text-foreground mb-3">Tour Search</h2>
+            <p className="text-muted-foreground mb-4">Search available land tour packages</p>
+            <button onClick={() => navigate("/cruises")} className="btn-search px-8 py-3">SEARCH TOURS</button>
           </div>
         )}
       </div>

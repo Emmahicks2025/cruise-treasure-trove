@@ -55,18 +55,18 @@ const SpecialOffers = () => {
   };
 
   return (
-    <section className="py-8 bg-muted">
-      <div className="max-w-7xl mx-auto px-4">
-        <h2 className="section-title mb-4">View Special Offers</h2>
-        <div className="flex gap-1 mb-5 justify-center">
+    <section className="py-10">
+      <div className="max-w-7xl mx-auto px-6">
+        <h2 className="section-title mb-5">View Special Offers</h2>
+        <div className="flex gap-1 mb-6 justify-center">
           {tabsConfig.map((tab, i) => (
             <button
               key={tab.label}
               onClick={() => setActiveTab(i)}
-              className={`px-5 py-2 text-sm font-bold rounded-t transition-colors ${
+              className={`px-5 py-2.5 text-sm font-semibold rounded-xl transition-all ${
                 activeTab === i
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-background text-muted-foreground hover:bg-border"
+                  ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                  : "glass text-muted-foreground hover:text-foreground"
               }`}
             >
               {tab.label}
@@ -78,22 +78,27 @@ const SpecialOffers = () => {
             const Icon = icons[i % icons.length];
             return (
               <div key={offer.name} className="offer-card cursor-pointer" onClick={() => handleView(offer.slug)}>
-                <div className="flex items-start gap-3">
-                  <Icon className="w-8 h-8 text-primary shrink-0 mt-1" />
+                <div className="flex items-start gap-4">
+                  <div className="p-2.5 rounded-xl bg-primary/8 shrink-0 mt-1">
+                    <Icon className="w-6 h-6 text-primary" />
+                  </div>
                   <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h4 className="font-heading font-bold text-primary">{offer.name}</h4>
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <h4 className="font-heading font-bold text-foreground">{offer.name}</h4>
                       {"tag" in offer && typeof (offer as any).tag === "string" && (offer as any).tag && (
-                        <span className="bg-red-sale text-primary-foreground text-[10px] font-bold px-2 py-0.5 rounded-sm">
+                        <span className="bg-red-sale/10 text-red-sale text-[10px] font-bold px-2.5 py-0.5 rounded-full">
                           {(offer as any).tag}
                         </span>
                       )}
                     </div>
                     <p className="font-bold text-sm text-foreground mb-0.5">{offer.headline}</p>
                     <p className="text-sm text-accent font-semibold mb-2">{offer.subline}</p>
-                    <ul className="space-y-0.5">
+                    <ul className="space-y-1">
                       {offer.perks.map((perk) => (
-                        <li key={perk} className="text-xs text-muted-foreground">• {perk}</li>
+                        <li key={perk} className="text-xs text-muted-foreground flex items-start gap-2">
+                          <span className="text-green-deal mt-0.5">✓</span>
+                          {perk}
+                        </li>
                       ))}
                     </ul>
                   </div>
@@ -102,7 +107,7 @@ const SpecialOffers = () => {
             );
           })}
         </div>
-        <p className="text-[10px] text-muted-foreground mt-4 text-center">
+        <p className="text-[10px] text-muted-foreground mt-5 text-center">
           All offers are based on select sailings and categories and are subject to availability at time of booking.
         </p>
       </div>
