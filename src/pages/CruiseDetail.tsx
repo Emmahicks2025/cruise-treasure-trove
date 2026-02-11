@@ -4,10 +4,13 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchCruiseBySlug, fetchCabinTypes, fetchDiningVenues, fetchEntertainmentVenues, fetchDeckPlans } from "@/lib/cruiseApi";
 import {
   Star, Ship, MapPin, Calendar, Users, Check, X, Anchor, ArrowLeft,
-  Utensils, Music, Dumbbell, Waves, Wifi, Wine, Baby, Heart,
+  Utensils, Music, Dumbbell, Waves, Wifi, Wine, Heart,
   Camera, ChevronDown, ChevronUp, Bed, Maximize, Layers, Shield,
-  Clock, Globe, Navigation, Sun, Coffee, Sparkles, Award, Phone
+  Clock, Globe, Navigation, Sun, Coffee, Sparkles, Award, Phone,
+  Mic2, Gamepad2, Martini, Gem,
+  BookOpen, Scissors, Droplets, Binoculars
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import TopBar from "@/components/TopBar";
 import Header from "@/components/Header";
 import MainNav from "@/components/MainNav";
@@ -33,44 +36,44 @@ const categoryLabels: Record<string, string> = {
 // Ship amenities data
 const shipAmenities = {
   dining: [
-    { name: "Main Dining Room", desc: "Elegant multi-course dining with rotating menus, open seating available" },
-    { name: "Lido Buffet", desc: "Casual buffet with international cuisine, pizza station, deli, salad bar" },
-    { name: "Specialty Restaurant", desc: "Premium steakhouse and seafood restaurant (surcharge applies)" },
-    { name: "24-Hour Room Service", desc: "In-cabin dining available around the clock" },
-    { name: "Pool Bar & Grill", desc: "Casual poolside burgers, hot dogs, and tropical drinks" },
-    { name: "Patisserie & Café", desc: "Fresh pastries, gourmet coffee, and afternoon tea service" },
+    { name: "Main Dining Room", desc: "Elegant multi-course dining with rotating menus, open seating available", icon: Utensils as LucideIcon },
+    { name: "Lido Buffet", desc: "Casual buffet with international cuisine, pizza station, deli, salad bar", icon: Coffee as LucideIcon },
+    { name: "Specialty Restaurant", desc: "Premium steakhouse and seafood restaurant (surcharge applies)", icon: Gem as LucideIcon },
+    { name: "24-Hour Room Service", desc: "In-cabin dining available around the clock", icon: Clock as LucideIcon },
+    { name: "Pool Bar & Grill", desc: "Casual poolside burgers, hot dogs, and tropical drinks", icon: Martini as LucideIcon },
+    { name: "Patisserie & Café", desc: "Fresh pastries, gourmet coffee, and afternoon tea service", icon: Coffee as LucideIcon },
   ],
   entertainment: [
-    { name: "Broadway-Style Theater", desc: "Nightly production shows, comedy acts, and live performances" },
-    { name: "Casino", desc: "Full casino with slots, poker, blackjack, and roulette tables" },
-    { name: "Nightclub & Lounge", desc: "Live music, DJ sets, and themed dance parties" },
-    { name: "Movie Theater", desc: "First-run films and classics shown daily" },
-    { name: "Live Music Venues", desc: "Piano bars, jazz clubs, and acoustic sessions throughout the ship" },
-    { name: "Trivia & Game Shows", desc: "Daily interactive activities and competitions" },
+    { name: "Broadway-Style Theater", desc: "Nightly production shows, comedy acts, and live performances", icon: Music as LucideIcon },
+    { name: "Casino", desc: "Full casino with slots, poker, blackjack, and roulette tables", icon: Gamepad2 as LucideIcon },
+    { name: "Nightclub & Lounge", desc: "Live music, DJ sets, and themed dance parties", icon: Mic2 as LucideIcon },
+    { name: "Movie Theater", desc: "First-run films and classics shown daily", icon: Camera as LucideIcon },
+    { name: "Live Music Venues", desc: "Piano bars, jazz clubs, and acoustic sessions throughout the ship", icon: Music as LucideIcon },
+    { name: "Trivia & Game Shows", desc: "Daily interactive activities and competitions", icon: Sparkles as LucideIcon },
   ],
   wellness: [
-    { name: "Spa & Thermal Suite", desc: "Full-service spa with sauna, steam room, and hydrotherapy pool" },
-    { name: "Fitness Center", desc: "State-of-the-art gym with personal trainers and fitness classes" },
-    { name: "Jogging Track", desc: "Outdoor track with ocean views for running and walking" },
-    { name: "Yoga & Pilates", desc: "Daily classes on the sports deck" },
-    { name: "Salon & Barber", desc: "Hair styling, manicures, pedicures, and grooming services" },
+    { name: "Spa & Thermal Suite", desc: "Full-service spa with sauna, steam room, and hydrotherapy pool", icon: Droplets as LucideIcon },
+    { name: "Fitness Center", desc: "State-of-the-art gym with personal trainers and fitness classes", icon: Dumbbell as LucideIcon },
+    { name: "Jogging Track", desc: "Outdoor track with ocean views for running and walking", icon: Binoculars as LucideIcon },
+    { name: "Yoga & Pilates", desc: "Daily classes on the sports deck", icon: Heart as LucideIcon },
+    { name: "Salon & Barber", desc: "Hair styling, manicures, pedicures, and grooming services", icon: Scissors as LucideIcon },
   ],
   activities: [
-    { name: "Pool Complex", desc: "Multiple pools including adults-only retreat and kids' splash zone" },
-    { name: "Sports Court", desc: "Basketball, volleyball, and mini-golf" },
-    { name: "Rock Climbing Wall", desc: "Multi-story climbing challenge with ocean views" },
-    { name: "Water Slides", desc: "Thrilling waterslides and aqua park" },
-    { name: "Art Gallery & Auction", desc: "Curated art exhibitions and auction events" },
-    { name: "Library & Card Room", desc: "Quiet spaces for reading and card games" },
-    { name: "Kids & Teen Club", desc: "Age-appropriate supervised activities and hangout spaces" },
+    { name: "Pool Complex", desc: "Multiple pools including adults-only retreat and kids' splash zone", icon: Waves as LucideIcon },
+    { name: "Sports Court", desc: "Basketball, volleyball, and mini-golf", icon: Dumbbell as LucideIcon },
+    { name: "Rock Climbing Wall", desc: "Multi-story climbing challenge with ocean views", icon: Award as LucideIcon },
+    { name: "Water Slides", desc: "Thrilling waterslides and aqua park", icon: Waves as LucideIcon },
+    { name: "Art Gallery & Auction", desc: "Curated art exhibitions and auction events", icon: Sparkles as LucideIcon },
+    { name: "Library & Card Room", desc: "Quiet spaces for reading and card games", icon: BookOpen as LucideIcon },
+    { name: "Kids & Teen Club", desc: "Age-appropriate supervised activities and hangout spaces", icon: Users as LucideIcon },
   ],
   services: [
-    { name: "Guest Services", desc: "24-hour assistance desk for any requests" },
-    { name: "Shore Excursion Desk", desc: "Book guided tours and activities at each port of call" },
-    { name: "Photo Studio", desc: "Professional photographers capture memories throughout your voyage" },
-    { name: "Medical Center", desc: "Fully equipped medical facility with doctor and nurse on call" },
-    { name: "Laundry Service", desc: "Same-day laundry, dry cleaning, and pressing" },
-    { name: "Wi-Fi & Connectivity", desc: "Internet packages available for staying connected at sea" },
+    { name: "Guest Services", desc: "24-hour assistance desk for any requests", icon: Shield as LucideIcon },
+    { name: "Shore Excursion Desk", desc: "Book guided tours and activities at each port of call", icon: Globe as LucideIcon },
+    { name: "Photo Studio", desc: "Professional photographers capture memories throughout your voyage", icon: Camera as LucideIcon },
+    { name: "Medical Center", desc: "Fully equipped medical facility with doctor and nurse on call", icon: Heart as LucideIcon },
+    { name: "Laundry Service", desc: "Same-day laundry, dry cleaning, and pressing", icon: Sun as LucideIcon },
+    { name: "Wi-Fi & Connectivity", desc: "Internet packages available for staying connected at sea", icon: Wifi as LucideIcon },
   ],
 };
 
@@ -295,27 +298,21 @@ const CruiseDetail = () => {
                   <h2 className="text-xl font-heading font-bold text-primary mb-4 flex items-center gap-2">
                     <Ship className="w-5 h-5" /> About {cruise.ship_name}
                   </h2>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                    <div className="bg-muted rounded-sm p-3 text-center">
-                      <Users className="w-5 h-5 text-primary mx-auto mb-1" />
-                      <p className="text-lg font-heading font-bold text-foreground">{cruise.max_passengers?.toLocaleString()}</p>
-                      <p className="text-[10px] text-muted-foreground">Guest Capacity</p>
-                    </div>
-                    <div className="bg-muted rounded-sm p-3 text-center">
-                      <Layers className="w-5 h-5 text-primary mx-auto mb-1" />
-                      <p className="text-lg font-heading font-bold text-foreground">16</p>
-                      <p className="text-[10px] text-muted-foreground">Passenger Decks</p>
-                    </div>
-                    <div className="bg-muted rounded-sm p-3 text-center">
-                      <Utensils className="w-5 h-5 text-primary mx-auto mb-1" />
-                      <p className="text-lg font-heading font-bold text-foreground">12+</p>
-                      <p className="text-[10px] text-muted-foreground">Dining Venues</p>
-                    </div>
-                    <div className="bg-muted rounded-sm p-3 text-center">
-                      <Waves className="w-5 h-5 text-primary mx-auto mb-1" />
-                      <p className="text-lg font-heading font-bold text-foreground">5</p>
-                      <p className="text-[10px] text-muted-foreground">Pool Areas</p>
-                    </div>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    {[
+                      { icon: Users, value: cruise.max_passengers?.toLocaleString() || "—", label: "Guest Capacity", gradient: "from-primary/20 to-ocean/10" },
+                      { icon: Layers, value: "16", label: "Passenger Decks", gradient: "from-ocean/20 to-primary/10" },
+                      { icon: Utensils, value: "12+", label: "Dining Venues", gradient: "from-accent/20 to-accent/5" },
+                      { icon: Waves, value: "5", label: "Pool Areas", gradient: "from-primary/15 to-ocean/10" },
+                    ].map(({ icon: StatIcon, value, label, gradient }) => (
+                      <div key={label} className="rounded-2xl p-4 text-center border border-border/50 hover:shadow-md transition-shadow">
+                        <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center mx-auto mb-2`}>
+                          <StatIcon className="w-5 h-5 text-primary" />
+                        </div>
+                        <p className="text-xl font-heading font-black text-foreground">{value}</p>
+                        <p className="text-[11px] text-muted-foreground font-medium">{label}</p>
+                      </div>
+                    ))}
                   </div>
                   <p className="text-sm text-muted-foreground">
                     Step aboard {cruise.ship_name} by {cruise.cruise_lines?.name} for an unforgettable {cruise.duration_days}-night voyage to {cruise.destinations?.name}. 
@@ -368,8 +365,10 @@ const CruiseDetail = () => {
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {cruise.highlights.map((h) => (
-                        <div key={h} className="flex items-start gap-3 p-3 bg-muted rounded-sm">
-                          <Star className="w-5 h-5 text-gold shrink-0 mt-0.5" />
+                        <div key={h} className="flex items-start gap-3 p-4 rounded-2xl border border-border/50 hover:shadow-md transition-shadow">
+                          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-accent/20 to-accent/5 flex items-center justify-center shrink-0">
+                            <Star className="w-4 h-4 text-accent" />
+                          </div>
                           <div>
                             <p className="text-sm font-semibold text-foreground">{h}</p>
                             <p className="text-xs text-muted-foreground mt-0.5">Exclusive experience included with this sailing</p>
@@ -645,18 +644,21 @@ const CruiseDetail = () => {
                 )}
 
                 {(!diningVenues || diningVenues.length === 0) && (
-                  <div className="space-y-4">
-                    {shipAmenities.dining.map((venue) => (
-                      <div key={venue.name} className="offer-card flex items-start gap-4">
-                        <div className="bg-primary/10 rounded-sm p-3">
-                          <Utensils className="w-6 h-6 text-primary" />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {shipAmenities.dining.map((venue) => {
+                      const VenueIcon = venue.icon;
+                      return (
+                        <div key={venue.name} className="offer-card flex items-start gap-4 hover:border-primary/20 transition-colors">
+                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/15 to-ocean/10 flex items-center justify-center shrink-0">
+                            <VenueIcon className="w-6 h-6 text-primary" />
+                          </div>
+                          <div>
+                            <h3 className="font-bold text-foreground mb-0.5">{venue.name}</h3>
+                            <p className="text-sm text-muted-foreground leading-relaxed">{venue.desc}</p>
+                          </div>
                         </div>
-                        <div>
-                          <h3 className="font-bold text-foreground mb-1">{venue.name}</h3>
-                          <p className="text-sm text-muted-foreground">{venue.desc}</p>
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
                 <div className="offer-card mt-6">
@@ -739,16 +741,21 @@ const CruiseDetail = () => {
                   ) : (
                     /* Fallback to hardcoded data */
                     <>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        {shipAmenities.entertainment.map((item) => (
-                          <div key={item.name} className="offer-card flex items-start gap-3">
-                            <Music className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                            <div>
-                              <p className="font-semibold text-sm text-foreground">{item.name}</p>
-                              <p className="text-xs text-muted-foreground">{item.desc}</p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {shipAmenities.entertainment.map((item) => {
+                          const ItemIcon = item.icon;
+                          return (
+                            <div key={item.name} className="offer-card flex items-start gap-4 hover:border-primary/20 transition-colors">
+                              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-accent/15 to-accent/5 flex items-center justify-center shrink-0">
+                                <ItemIcon className="w-5 h-5 text-accent" />
+                              </div>
+                              <div>
+                                <p className="font-semibold text-sm text-foreground">{item.name}</p>
+                                <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{item.desc}</p>
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </>
                   )}
@@ -759,16 +766,21 @@ const CruiseDetail = () => {
                   <h3 className="text-lg font-heading font-bold text-primary mb-3 flex items-center gap-2">
                     <Heart className="w-5 h-5" /> Spa & Wellness
                   </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {shipAmenities.wellness.map((item) => (
-                      <div key={item.name} className="offer-card flex items-start gap-3">
-                        <Dumbbell className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                        <div>
-                          <p className="font-semibold text-sm text-foreground">{item.name}</p>
-                          <p className="text-xs text-muted-foreground">{item.desc}</p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {shipAmenities.wellness.map((item) => {
+                      const ItemIcon = item.icon;
+                      return (
+                        <div key={item.name} className="offer-card flex items-start gap-4 hover:border-primary/20 transition-colors">
+                          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-green-deal/15 to-green-deal/5 flex items-center justify-center shrink-0">
+                            <ItemIcon className="w-5 h-5 text-green-deal" />
+                          </div>
+                          <div>
+                            <p className="font-semibold text-sm text-foreground">{item.name}</p>
+                            <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{item.desc}</p>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -776,16 +788,21 @@ const CruiseDetail = () => {
                   <h3 className="text-lg font-heading font-bold text-primary mb-3 flex items-center gap-2">
                     <Shield className="w-5 h-5" /> Guest Services
                   </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {shipAmenities.services.map((item) => (
-                      <div key={item.name} className="offer-card flex items-start gap-3">
-                        <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                        <div>
-                          <p className="font-semibold text-sm text-foreground">{item.name}</p>
-                          <p className="text-xs text-muted-foreground">{item.desc}</p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {shipAmenities.services.map((item) => {
+                      const ItemIcon = item.icon;
+                      return (
+                        <div key={item.name} className="offer-card flex items-start gap-4 hover:border-primary/20 transition-colors">
+                          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary/15 to-ocean/10 flex items-center justify-center shrink-0">
+                            <ItemIcon className="w-5 h-5 text-primary" />
+                          </div>
+                          <div>
+                            <p className="font-semibold text-sm text-foreground">{item.name}</p>
+                            <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{item.desc}</p>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               </section>
@@ -835,7 +852,7 @@ const CruiseDetail = () => {
                     return (
                       <div key={pkg.name} className="offer-card">
                         <div className="flex items-start gap-4">
-                          <div className="bg-primary/10 rounded-sm p-3 shrink-0">
+                          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/15 to-ocean/10 flex items-center justify-center shrink-0">
                             <Icon className="w-7 h-7 text-primary" />
                           </div>
                           <div className="flex-1">
@@ -945,23 +962,20 @@ const CruiseDetail = () => {
 
               {/* Trust badges */}
               <div className="offer-card text-center">
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Shield className="w-6 h-6 text-primary mx-auto mb-1" />
-                    <p className="text-[10px] font-semibold text-foreground">Price Match Guarantee</p>
-                  </div>
-                  <div>
-                    <Award className="w-6 h-6 text-primary mx-auto mb-1" />
-                    <p className="text-[10px] font-semibold text-foreground">Top Rated Agency</p>
-                  </div>
-                  <div>
-                    <Phone className="w-6 h-6 text-primary mx-auto mb-1" />
-                    <p className="text-[10px] font-semibold text-foreground">24/7 Support</p>
-                  </div>
-                  <div>
-                    <Check className="w-6 h-6 text-primary mx-auto mb-1" />
-                    <p className="text-[10px] font-semibold text-foreground">No Booking Fees</p>
-                  </div>
+                <div className="grid grid-cols-2 gap-4">
+                  {[
+                    { icon: Shield, label: "Price Match Guarantee", gradient: "from-primary/15 to-ocean/10" },
+                    { icon: Award, label: "Top Rated Agency", gradient: "from-accent/15 to-accent/5" },
+                    { icon: Phone, label: "24/7 Support", gradient: "from-green-deal/15 to-green-deal/5" },
+                    { icon: Check, label: "No Booking Fees", gradient: "from-primary/15 to-ocean/10" },
+                  ].map(({ icon: BadgeIcon, label, gradient }) => (
+                    <div key={label} className="text-center">
+                      <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center mx-auto mb-1.5`}>
+                        <BadgeIcon className="w-5 h-5 text-primary" />
+                      </div>
+                      <p className="text-[10px] font-semibold text-foreground">{label}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
