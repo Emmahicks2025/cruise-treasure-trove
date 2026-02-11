@@ -45,10 +45,10 @@ const MainNav = () => {
 
   return (
     <nav className="nav-main relative z-40">
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between md:justify-start">
           <button
-            className="md:hidden p-2"
+            className="md:hidden p-2 rounded-xl"
             onClick={() => setMobileOpen(!mobileOpen)}
           >
             {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -63,18 +63,19 @@ const MainNav = () => {
               >
                 <button
                   onClick={() => item.action?.()}
-                  className="flex items-center gap-0.5 px-3 py-3 text-sm font-semibold hover:bg-navy-dark transition-colors"
+                  className="flex items-center gap-1 px-4 py-3.5 text-sm font-medium hover:bg-white/10 rounded-lg transition-all"
                 >
                   {item.label}
-                  {item.hasDropdown && <ChevronDown className="w-3 h-3 opacity-70" />}
+                  {item.hasDropdown && <ChevronDown className="w-3 h-3 opacity-60" />}
                 </button>
                 {item.hasDropdown && openDropdown === item.label && item.items && item.items.length > 0 && (
-                  <div className="absolute top-full left-0 bg-background border border-border shadow-lg rounded-sm min-w-[220px] max-h-[400px] overflow-y-auto z-50">
+                  <div className="absolute top-full left-0 glass-strong rounded-xl min-w-[240px] max-h-[400px] overflow-y-auto z-50 mt-1 py-2">
                     {item.items.map((sub) => (
                       <button
                         key={sub.label}
                         onClick={() => { sub.action(); setOpenDropdown(null); }}
-                        className="block w-full text-left px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors"
+                        className="block w-full text-left px-4 py-2.5 text-sm text-foreground hover:bg-primary/5 rounded-lg mx-1 transition-colors"
+                        style={{ width: "calc(100% - 8px)" }}
                       >
                         {sub.label}
                       </button>
@@ -86,12 +87,12 @@ const MainNav = () => {
           </ul>
         </div>
         {mobileOpen && (
-          <ul className="md:hidden pb-3">
+          <ul className="md:hidden pb-3 space-y-1">
             {navItems.map((item) => (
               <li key={item.label}>
                 <button
                   onClick={() => { item.action?.(); setMobileOpen(false); }}
-                  className="w-full text-left px-3 py-2 text-sm font-semibold hover:bg-navy-dark transition-colors"
+                  className="w-full text-left px-4 py-2.5 text-sm font-medium hover:bg-white/10 rounded-xl transition-colors"
                 >
                   {item.label}
                 </button>

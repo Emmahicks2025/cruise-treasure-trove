@@ -22,27 +22,32 @@ const FeaturedDestinations = () => {
   const featured = destinations?.slice(0, 7) || [];
 
   return (
-    <section className="py-8">
-      <div className="max-w-7xl mx-auto px-4">
-        <h3 className="text-xl font-heading font-bold text-primary text-center mb-6">
-          Featured Destinations
+    <section className="py-10">
+      <div className="max-w-7xl mx-auto px-6">
+        <h3 className="section-title mb-8">
+          <span className="relative">
+            Featured Destinations
+            <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-12 h-1 bg-ocean rounded-full" />
+          </span>
         </h3>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4">
           {featured.map((dest) => (
             <div
               key={dest.id}
               onClick={() => navigate(`/cruises?destination=${dest.id}`)}
-              className="deal-card cursor-pointer text-center"
+              className="deal-card cursor-pointer text-center group"
             >
-              <img
-                src={destImages[dest.slug] || "/images/destinations/mediterranean.jpg"}
-                alt={dest.name}
-                className="w-full h-28 object-cover"
-              />
-              <div className="p-2">
-                <h4 className="font-bold text-sm text-foreground">{dest.name}</h4>
-                <p className="text-xs text-primary font-semibold">{dest.region}</p>
-                <button className="btn-book mt-1.5 text-[10px] px-3 py-1 w-full">VIEW CRUISES</button>
+              <div className="overflow-hidden rounded-t-lg">
+                <img
+                  src={destImages[dest.slug] || "/images/destinations/mediterranean.jpg"}
+                  alt={dest.name}
+                  className="w-full h-28 object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <div className="p-3">
+                <h4 className="font-semibold text-sm text-foreground">{dest.name}</h4>
+                <p className="text-xs text-primary font-medium mt-0.5">{dest.region}</p>
+                <button className="btn-book mt-2 text-[10px] px-3 py-1.5 w-full">VIEW CRUISES</button>
               </div>
             </div>
           ))}
