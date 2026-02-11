@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { fetchCruiseBySlug, fetchCabinTypes } from "@/lib/cruiseApi";
+import { fetchCruiseBySlug, fetchCabinTypes, fetchDiningVenues, fetchEntertainmentVenues, fetchDeckPlans } from "@/lib/cruiseApi";
 import {
   Star, Ship, MapPin, Calendar, Users, Check, X, Anchor, ArrowLeft,
   Utensils, Music, Dumbbell, Waves, Wifi, Wine, Baby, Heart,
@@ -152,6 +152,26 @@ const CruiseDetail = () => {
     queryKey: ["cabins", cruise?.id],
     queryFn: () => fetchCabinTypes(cruise!.id),
     enabled: !!cruise?.id,
+  });
+
+  const cruiseLineId = cruise?.cruise_lines?.id;
+
+  const { data: diningVenues } = useQuery({
+    queryKey: ["dining", cruiseLineId],
+    queryFn: () => fetchDiningVenues(cruiseLineId!),
+    enabled: !!cruiseLineId,
+  });
+
+  const { data: entertainmentVenues } = useQuery({
+    queryKey: ["entertainment", cruiseLineId],
+    queryFn: () => fetchEntertainmentVenues(cruiseLineId!),
+    enabled: !!cruiseLineId,
+  });
+
+  const { data: deckPlans } = useQuery({
+    queryKey: ["deckPlans", cruiseLineId],
+    queryFn: () => fetchDeckPlans(cruiseLineId!),
+    enabled: !!cruiseLineId,
   });
 
   if (isLoading) return <div className="min-h-screen flex items-center justify-center"><Anchor className="w-8 h-8 animate-spin text-primary" /></div>;
@@ -417,7 +437,7 @@ const CruiseDetail = () => {
                         <div className="flex flex-col md:flex-row gap-4">
                           <div className="relative w-full md:w-56 h-40 md:h-auto shrink-0">
                             <img
-                              src={`${cabin.image_url || categoryImages[cabin.category] || "/images/destinations/bahamas.jpg"}?v=3`}
+                              src={`${cabin.image_url || categoryImages[cabin.category] || "/images/destinations/bahamas.jpg"}?v=4`}
                               alt={cabin.name}
                               className="w-full h-full object-cover rounded-sm"
                             />
@@ -562,19 +582,82 @@ const CruiseDetail = () => {
                   From elegant multi-course dinners to casual poolside bites, {cruise.ship_name} serves up a world of flavors. 
                   Main dining and buffet are included in your cruise fare, with specialty restaurants available at an additional charge.
                 </p>
-                <div className="space-y-4">
-                  {shipAmenities.dining.map((venue) => (
-                    <div key={venue.name} className="offer-card flex items-start gap-4">
+
+                {/* Included dining */}
+                <h3 className="font-heading font-bold text-green-deal mb-3 flex items-center gap-2"><Check className="w-5 h-5" /> Included Dining</h3>
+                <div className="space-y-3 mb-6">
+                  {(diningVenues?.filter(v => v.is_included) || []).map((venue) => (
+                    <div key={venue.id} className="offer-card flex items-start gap-4">
                       <div className="bg-primary/10 rounded-sm p-3">
                         <Utensils className="w-6 h-6 text-primary" />
                       </div>
-                      <div>
-                        <h3 className="font-bold text-foreground mb-1">{venue.name}</h3>
-                        <p className="text-sm text-muted-foreground">{venue.desc}</p>
+                      <div className="flex-1">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <h3 className="font-bold text-foreground mb-0.5">{venue.name}</h3>
+                            {venue.cuisine_type && <p className="text-xs text-primary font-semibold">{venue.cuisine_type}</p>}
+                          </div>
+                          <span className="bg-green-deal/10 text-green-deal text-[10px] font-bold px-2 py-0.5 rounded-sm">INCLUDED</span>
+                        </div>
+                        <p className="text-sm text-muted-foreground mt-1">{venue.description}</p>
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {venue.meal_periods?.map(m => (
+                            <span key={m} className="bg-muted text-[10px] px-2 py-0.5 rounded-sm text-muted-foreground">{m}</span>
+                          ))}
+                          <span className="text-[10px] text-muted-foreground">• {venue.dress_code}</span>
+                        </div>
                       </div>
                     </div>
                   ))}
                 </div>
+
+                {/* Specialty dining */}
+                {(diningVenues?.filter(v => !v.is_included) || []).length > 0 && (
+                  <>
+                    <h3 className="font-heading font-bold text-primary mb-3 flex items-center gap-2"><Sparkles className="w-5 h-5" /> Specialty Restaurants</h3>
+                    <div className="space-y-3 mb-6">
+                      {diningVenues?.filter(v => !v.is_included).map((venue) => (
+                        <div key={venue.id} className="offer-card flex items-start gap-4">
+                          <div className="bg-accent/10 rounded-sm p-3">
+                            <Wine className="w-6 h-6 text-accent" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-start justify-between">
+                              <div>
+                                <h3 className="font-bold text-foreground mb-0.5">{venue.name}</h3>
+                                {venue.cuisine_type && <p className="text-xs text-primary font-semibold">{venue.cuisine_type}</p>}
+                              </div>
+                              <span className="text-sm font-heading font-bold text-primary">${venue.surcharge_usd}/pp</span>
+                            </div>
+                            <p className="text-sm text-muted-foreground mt-1">{venue.description}</p>
+                            <div className="flex flex-wrap gap-2 mt-2">
+                              {venue.meal_periods?.map(m => (
+                                <span key={m} className="bg-muted text-[10px] px-2 py-0.5 rounded-sm text-muted-foreground">{m}</span>
+                              ))}
+                              <span className="text-[10px] text-muted-foreground">• {venue.dress_code}</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                {(!diningVenues || diningVenues.length === 0) && (
+                  <div className="space-y-4">
+                    {shipAmenities.dining.map((venue) => (
+                      <div key={venue.name} className="offer-card flex items-start gap-4">
+                        <div className="bg-primary/10 rounded-sm p-3">
+                          <Utensils className="w-6 h-6 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-foreground mb-1">{venue.name}</h3>
+                          <p className="text-sm text-muted-foreground">{venue.desc}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 <div className="offer-card mt-6">
                   <h3 className="font-heading font-bold text-primary mb-3">Dining Schedule</h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
@@ -612,21 +695,65 @@ const CruiseDetail = () => {
               <section className="space-y-8">
                 <div>
                   <h2 className="text-xl font-heading font-bold text-primary mb-2 flex items-center gap-2">
-                    <Music className="w-5 h-5" /> Entertainment
+                    <Music className="w-5 h-5" /> Entertainment & Activities
                   </h2>
-                  <p className="text-sm text-muted-foreground mb-4">World-class shows, live music, and exciting nightlife every evening.</p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {shipAmenities.entertainment.map((item) => (
-                      <div key={item.name} className="offer-card flex items-start gap-3">
-                        <Music className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                        <div>
-                          <p className="font-semibold text-sm text-foreground">{item.name}</p>
-                          <p className="text-xs text-muted-foreground">{item.desc}</p>
-                        </div>
+                  <p className="text-sm text-muted-foreground mb-4">World-class shows, live music, and exciting nightlife aboard {cruise.ship_name}.</p>
+
+                  {entertainmentVenues && entertainmentVenues.length > 0 ? (
+                    <>
+                      {/* Group by category */}
+                      {["shows", "music", "activities", "lounge", "casino"].map(cat => {
+                        const items = entertainmentVenues.filter(v => v.category === cat);
+                        if (items.length === 0) return null;
+                        const catLabels: Record<string, { label: string; icon: typeof Music }> = {
+                          shows: { label: "Shows & Performances", icon: Music },
+                          music: { label: "Live Music & Nightlife", icon: Music },
+                          activities: { label: "Activities & Recreation", icon: Waves },
+                          lounge: { label: "Lounges & Bars", icon: Wine },
+                          casino: { label: "Casino & Gaming", icon: Sparkles },
+                        };
+                        const { label, icon: CatIcon } = catLabels[cat] || { label: cat, icon: Music };
+                        return (
+                          <div key={cat} className="mb-6">
+                            <h3 className="text-lg font-heading font-bold text-primary mb-3 flex items-center gap-2">
+                              <CatIcon className="w-5 h-5" /> {label}
+                            </h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                              {items.map(item => (
+                                <div key={item.id} className="offer-card flex items-start gap-3">
+                                  <CatIcon className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                                  <div>
+                                    <p className="font-semibold text-sm text-foreground">{item.name}</p>
+                                    <p className="text-xs text-muted-foreground">{item.description}</p>
+                                    {item.schedule && <p className="text-[10px] text-primary mt-1">{item.schedule}</p>}
+                                    {!item.is_complimentary && <span className="text-[10px] text-accent font-semibold">Surcharge applies</span>}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </>
+                  ) : (
+                    /* Fallback to hardcoded data */
+                    <>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {shipAmenities.entertainment.map((item) => (
+                          <div key={item.name} className="offer-card flex items-start gap-3">
+                            <Music className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                            <div>
+                              <p className="font-semibold text-sm text-foreground">{item.name}</p>
+                              <p className="text-xs text-muted-foreground">{item.desc}</p>
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
+                    </>
+                  )}
                 </div>
+
+                {/* Spa & wellness always shown */}
                 <div>
                   <h3 className="text-lg font-heading font-bold text-primary mb-3 flex items-center gap-2">
                     <Heart className="w-5 h-5" /> Spa & Wellness
@@ -643,22 +770,7 @@ const CruiseDetail = () => {
                     ))}
                   </div>
                 </div>
-                <div>
-                  <h3 className="text-lg font-heading font-bold text-primary mb-3 flex items-center gap-2">
-                    <Waves className="w-5 h-5" /> Activities & Recreation
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {shipAmenities.activities.map((item) => (
-                      <div key={item.name} className="offer-card flex items-start gap-3">
-                        <Sun className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                        <div>
-                          <p className="font-semibold text-sm text-foreground">{item.name}</p>
-                          <p className="text-xs text-muted-foreground">{item.desc}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+
                 <div>
                   <h3 className="text-lg font-heading font-bold text-primary mb-3 flex items-center gap-2">
                     <Shield className="w-5 h-5" /> Guest Services
@@ -684,19 +796,46 @@ const CruiseDetail = () => {
                 <h2 className="text-xl font-heading font-bold text-primary mb-4 flex items-center gap-2">
                   <Layers className="w-5 h-5" /> Deck Plans — {cruise.ship_name}
                 </h2>
-                <div className="space-y-3">
-                  {deckInfo.map((d) => (
-                    <div key={d.deck} className="offer-card flex items-start gap-4">
-                      <div className="bg-primary text-primary-foreground rounded-sm w-16 h-12 flex items-center justify-center font-heading font-bold text-sm shrink-0">
-                        {d.deck.replace("Deck ", "")}
+
+                {deckPlans && deckPlans.length > 0 ? (
+                  <div className="space-y-3">
+                    {deckPlans.map((d) => (
+                      <div key={d.id} className="offer-card flex items-start gap-4">
+                        <div className="bg-primary text-primary-foreground rounded-sm w-16 h-12 flex items-center justify-center font-heading font-bold text-sm shrink-0">
+                          {d.deck_number}
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-bold text-foreground text-sm">{d.deck_name}</h3>
+                          <p className="text-xs text-muted-foreground mt-1">{d.features?.join(" • ")}</p>
+                          {d.cabin_categories?.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mt-2">
+                              {d.cabin_categories.map(cat => (
+                                <span key={cat} className="bg-primary/10 text-primary text-[10px] font-semibold px-2 py-0.5 rounded-sm">
+                                  {categoryLabels[cat] || cat}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="font-bold text-foreground text-sm">{d.deck}</h3>
-                        <p className="text-xs text-muted-foreground">{d.features}</p>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {deckInfo.map((d) => (
+                      <div key={d.deck} className="offer-card flex items-start gap-4">
+                        <div className="bg-primary text-primary-foreground rounded-sm w-16 h-12 flex items-center justify-center font-heading font-bold text-sm shrink-0">
+                          {d.deck.replace("Deck ", "")}
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-foreground text-sm">{d.deck}</h3>
+                          <p className="text-xs text-muted-foreground">{d.features}</p>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                )}
+
                 <div className="offer-card mt-6">
                   <h3 className="font-heading font-bold text-primary mb-3">Cabin Categories by Deck</h3>
                   <div className="overflow-x-auto">
