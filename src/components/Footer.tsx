@@ -58,8 +58,8 @@ const Footer = () => {
             ))}
           </div>
           <div className="text-center text-xs text-primary-foreground/30">
-            <p>CRUISE.COM is a proud PREMIER PARTNER of CLIA</p>
-            <p className="mt-1">©2026 CRUISE.COM. All Rights reserved. CST #2151626-50</p>
+            <p>CruiseWave is a proud PREMIER PARTNER of CLIA</p>
+            <p className="mt-1">©2026 CruiseWave. All Rights reserved. CST #2151626-50</p>
           </div>
         </div>
       </div>
