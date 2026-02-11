@@ -14,11 +14,11 @@ import MainNav from "@/components/MainNav";
 import Footer from "@/components/Footer";
 
 const categoryImages: Record<string, string> = {
-  interior: "/images/destinations/river-cruises.jpg",
-  ocean_view: "/images/destinations/north-europe.jpg",
-  balcony: "/images/destinations/mediterranean.jpg",
-  suite: "/images/destinations/bahamas.jpg",
-  penthouse: "/images/deals/tahiti.jpg",
+  interior: "/images/cabins/interior.jpg",
+  ocean_view: "/images/cabins/ocean-view.jpg",
+  balcony: "/images/cabins/balcony.jpg",
+  suite: "/images/cabins/suite.jpg",
+  penthouse: "/images/cabins/penthouse.jpg",
 };
 
 const categoryLabels: Record<string, string> = {
