@@ -6,57 +6,57 @@
 
 @layer base {
   :root {
-    --background: 220 20% 97%;
-    --foreground: 220 20% 10%;
+    --background: 180 10% 97%;
+    --foreground: 200 25% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 20% 10%;
+    --card-foreground: 200 25% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 10%;
+    --popover-foreground: 200 25% 10%;
 
-    --primary: 215 80% 48%;
+    --primary: 174 62% 32%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 14% 94%;
-    --secondary-foreground: 220 20% 20%;
+    --secondary: 180 10% 94%;
+    --secondary-foreground: 200 20% 20%;
 
-    --muted: 220 14% 95%;
-    --muted-foreground: 220 10% 46%;
+    --muted: 180 8% 95%;
+    --muted-foreground: 200 10% 44%;
 
-    --accent: 32 100% 50%;
+    --accent: 12 85% 58%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 13% 90%;
-    --input: 220 13% 90%;
-    --ring: 215 80% 48%;
+    --border: 180 10% 90%;
+    --input: 180 10% 90%;
+    --ring: 174 62% 32%;
 
     --radius: 1rem;
 
-    /* Cruise-specific tokens — refreshed palette */
-    --navy: 215 80% 48%;
-    --navy-dark: 220 60% 18%;
-    --navy-light: 215 60% 58%;
-    --ocean: 195 100% 42%;
-    --ocean-light: 195 85% 55%;
-    --gold: 32 100% 50%;
-    --gold-hover: 28 100% 44%;
+    /* Cruise-specific tokens — Deep Teal & Coral */
+    --navy: 174 62% 32%;
+    --navy-dark: 185 50% 14%;
+    --navy-light: 174 45% 45%;
+    --ocean: 182 55% 38%;
+    --ocean-light: 180 50% 50%;
+    --gold: 12 85% 58%;
+    --gold-hover: 8 80% 50%;
     --red-sale: 0 78% 56%;
     --green-deal: 152 60% 44%;
-    --topbar-bg: 220 60% 18%;
-    --search-bg: 220 20% 97%;
+    --topbar-bg: 185 50% 14%;
+    --search-bg: 180 10% 97%;
     --countdown-bg: 0 0% 100%;
-    --section-alt-bg: 220 20% 97%;
-    --deal-card-shadow: 0 2px 16px hsl(220 40% 50% / 0.08);
+    --section-alt-bg: 180 10% 97%;
+    --deal-card-shadow: 0 2px 16px hsl(180 30% 40% / 0.08);
 
     /* Glass tokens */
     --glass-bg: 0 0% 100% / 0.65;
     --glass-border: 0 0% 100% / 0.35;
     --glass-blur: 20px;
-    --glass-shadow: 0 8px 32px hsl(220 40% 50% / 0.12);
+    --glass-shadow: 0 8px 32px hsl(180 30% 40% / 0.12);
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -103,7 +103,7 @@
   }
 
   .glass-dark {
-    background: hsl(220 40% 12% / 0.75);
+    background: hsl(185 45% 12% / 0.75);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border: 1px solid hsl(0 0% 100% / 0.08);
@@ -119,35 +119,35 @@
   /* ── Main nav ── */
   .nav-main {
     @apply text-primary-foreground;
-    background: linear-gradient(135deg, hsl(215 80% 48%), hsl(220 72% 38%));
+    background: linear-gradient(135deg, hsl(174 62% 32%), hsl(185 50% 22%));
     backdrop-filter: blur(12px);
   }
 
   /* ── Buttons ── */
   .btn-search {
     @apply font-semibold uppercase tracking-wide text-sm;
-    background: linear-gradient(135deg, hsl(var(--gold)), hsl(28 100% 46%));
+    background: linear-gradient(135deg, hsl(var(--gold)), hsl(8 80% 52%));
     color: hsl(0 0% 100%);
     border-radius: var(--radius);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 14px hsl(32 100% 50% / 0.3);
+    box-shadow: 0 4px 14px hsl(12 85% 58% / 0.3);
   }
   .btn-search:hover {
     transform: translateY(-1px);
-    box-shadow: 0 6px 20px hsl(32 100% 50% / 0.4);
+    box-shadow: 0 6px 20px hsl(12 85% 58% / 0.4);
   }
 
   .btn-book {
     @apply font-semibold uppercase text-sm px-6 py-2.5;
-    background: linear-gradient(135deg, hsl(var(--gold)), hsl(28 100% 46%));
+    background: linear-gradient(135deg, hsl(var(--gold)), hsl(8 80% 52%));
     color: hsl(0 0% 100%);
     border-radius: var(--radius);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 14px hsl(32 100% 50% / 0.25);
+    box-shadow: 0 4px 14px hsl(12 85% 58% / 0.25);
   }
   .btn-book:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px hsl(32 100% 50% / 0.35);
+    box-shadow: 0 8px 24px hsl(12 85% 58% / 0.35);
   }
 
   /* ── Section title ── */
@@ -170,7 +170,7 @@
   }
   .deal-card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 20px 40px hsl(220 40% 50% / 0.15);
+    box-shadow: 0 20px 40px hsl(180 30% 40% / 0.15);
   }
 
   .offer-card {
@@ -184,7 +184,7 @@
     box-shadow: var(--deal-card-shadow);
   }
   .offer-card:hover {
-    box-shadow: 0 16px 40px hsl(220 40% 50% / 0.14);
+    box-shadow: 0 16px 40px hsl(180 30% 40% / 0.14);
     transform: translateY(-3px);
   }
 
@@ -200,8 +200,8 @@
   .slide-overlay {
     background: linear-gradient(
       135deg,
-      hsl(220 40% 8% / 0.65) 0%,
-      hsl(220 40% 8% / 0.3) 50%,
+      hsl(185 45% 8% / 0.65) 0%,
+      hsl(185 45% 8% / 0.3) 50%,
       transparent 100%
     );
   }
